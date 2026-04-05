@@ -165,14 +165,20 @@
     </div>
 
     <div class="card">
-      <div class="grid-2">
-        <div class="box">
+      <div class="box">
           <div class="label">Totale cliente</div>
           <div class="value" id="saleTotal">€ 0,00</div>
         </div>
-        <div class="box">
+
+      <div style="margin-top:12px;">
+        <div class="label">Importo dato dal cliente</div>
+        <input type="number" id="paidInput" min="0" step="0.01" placeholder="Es. 20" />
+      </div>
+
+      <div class="box" style="margin-top:12px;">
           <div class="label">Resto da dare</div>
           <div class="value" id="changeValue">€ 0,00</div>
+        </div>
         </div>
       </div>
       <div style="margin-top:12px;">
@@ -463,7 +469,8 @@
           const d = s.createdAt && typeof s.createdAt.toDate === 'function' ? s.createdAt.toDate().toLocaleString('it-IT') : '';
           rows.push([d, s.cashier || '', s.items?.birra || 0, s.items?.spritz || 0, s.items?.gin || 0, s.items?.acqua || 0, s.total || 0, s.paid || 0, s.change || 0]);
         });
-        const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(';')).join('\n');
+        const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(';')).join('
+');
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
