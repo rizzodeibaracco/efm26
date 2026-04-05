@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EFM 26</title>
   <style>
     :root {
@@ -24,11 +24,7 @@
       color: var(--text);
       min-height: 100vh;
     }
-    .wrap {
-      max-width: 820px;
-      margin: 0 auto;
-      padding: 14px;
-    }
+    .wrap { max-width: 820px; margin: 0 auto; padding: 14px; }
     .title {
       text-align: center;
       font-size: 34px;
@@ -44,11 +40,7 @@
       margin-bottom: 14px;
       box-shadow: 0 8px 24px rgba(0,0,0,.25);
     }
-    .section-title {
-      font-size: 22px;
-      font-weight: 800;
-      margin-bottom: 12px;
-    }
+    .section-title { font-size: 22px; font-weight: 800; margin-bottom: 12px; }
     .product {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -73,11 +65,7 @@
     .plus { background: var(--green); color: #052e16; }
     .minus { background: #fca5a5; color: #450a0a; }
     .qty { min-width: 34px; text-align: center; font-size: 28px; font-weight: 800; }
-    .box {
-      background: var(--card2);
-      border-radius: 14px;
-      padding: 14px;
-    }
+    .box { background: var(--card2); border-radius: 14px; padding: 14px; }
     .label { color: var(--muted); font-size: 14px; margin-bottom: 6px; }
     .value { font-size: 30px; font-weight: 800; }
     input {
@@ -149,7 +137,7 @@
 
     <div class="card">
       <div class="section-title">Cassiere</div>
-      <input type="text" id="cashierName" placeholder="Nome cassiere" maxlength="30" />
+      <input type="text" id="cashierName" placeholder="Nome cassiere" maxlength="30">
       <p class="small" style="margin-top:10px;">Il nome viene salvato insieme a ogni vendita.</p>
     </div>
 
@@ -166,7 +154,7 @@
 
       <div style="margin-top:12px;">
         <div class="label">Importo dato dal cliente</div>
-        <input type="number" id="paidInput" min="0" step="0.01" placeholder="Es. 20" />
+        <input type="number" id="paidInput" min="0" step="0.01" placeholder="Es. 20">
       </div>
 
       <div class="box" style="margin-top:12px;">
@@ -191,6 +179,7 @@
         <div class="label">Incasso totale live</div>
         <div class="value" id="live-total">€ 0,00</div>
       </div>
+      <p class="small" id="syncInfo" style="margin-top:10px;">Modalità locale in caricamento...</p>
     </div>
 
     <div class="card">
@@ -202,33 +191,7 @@
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import {
-      getFirestore,
-      doc,
-      setDoc,
-      updateDoc,
-      increment,
-      onSnapshot,
-      collection,
-      addDoc,
-      serverTimestamp,
-      query,
-      orderBy,
-      limit,
-      getDocs
-    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDAtBACOSyWpMla4yAA9_bQ5oxY3NRIibg",
-      authDomain: "efm-26-cassa.firebaseapp.com",
-      projectId: "efm-26-cassa",
-      storageBucket: "efm-26-cassa.firebasestorage.app",
-      messagingSenderId: "472657128260",
-      appId: "1:472657128260:web:a4646ffebe71c03fad0511"
-    };
-
+  <script>
     const products = [
       { key: 'birra', name: 'Birra', price: 6 },
       { key: 'spritz', name: 'Spritz', price: 6 },
@@ -240,13 +203,12 @@
       items: { birra: 0, spritz: 0, gin: 0, acqua: 0 },
       paid: 0,
       cashier: localStorage.getItem('efm26_cashier') || '',
-      live: { birra: 0, spritz: 0, gin: 0, acqua: 0, totalCash: 0 },
-      recentSales: []
+      live: JSON.parse(localStorage.getItem('efm26_live') || '{"birra":0,"spritz":0,"gin":0,"acqua":0,"totalCash":0}'),
+      recentSales: JSON.parse(localStorage.getItem('efm26_sales_local') || '[]'),
+      firebaseReady: false,
+      db: null,
+      statsRef: null
     };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const statsRef = doc(db, 'efm26', 'stats');
 
     const productsEl = document.getElementById('products');
     const saleTotalEl = document.getElementById('saleTotal');
@@ -259,6 +221,7 @@
     const salesList = document.getElementById('salesList');
     const exportBtn = document.getElementById('exportBtn');
     const resetTotalsBtn = document.getElementById('resetTotalsBtn');
+    const syncInfo = document.getElementById('syncInfo');
 
     function euro(value) {
       return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(value || 0);
@@ -276,6 +239,12 @@
       return Object.values(state.items).some(v => v > 0);
     }
 
+    function saveLocalState() {
+      localStorage.setItem('efm26_cashier', state.cashier);
+      localStorage.setItem('efm26_live', JSON.stringify(state.live));
+      localStorage.setItem('efm26_sales_local', JSON.stringify(state.recentSales.slice(0, 20)));
+    }
+
     function renderProducts() {
       productsEl.innerHTML = products.map(p => `
         <div class="product">
@@ -284,9 +253,9 @@
             <span class="price">${euro(p.price)}</span>
           </div>
           <div class="qty-box">
-            <button class="qty-btn minus" data-key="${p.key}" data-action="minus">−</button>
+            <button type="button" class="qty-btn minus" data-key="${p.key}" data-action="minus">−</button>
             <div class="qty" id="qty-${p.key}">${state.items[p.key]}</div>
-            <button class="qty-btn plus" data-key="${p.key}" data-action="plus">+</button>
+            <button type="button" class="qty-btn plus" data-key="${p.key}" data-action="plus">+</button>
           </div>
         </div>
       `).join('');
@@ -307,15 +276,11 @@
         salesList.innerHTML = 'Nessuna vendita registrata.';
         return;
       }
-      salesList.innerHTML = state.recentSales.map(sale => {
+      salesList.innerHTML = state.recentSales.slice(0, 20).map(sale => {
         const itemsText = products
           .filter(p => (sale.items?.[p.key] || 0) > 0)
           .map(p => `${p.name} x${sale.items[p.key]}`)
           .join(', ');
-        let timeText = '';
-        if (sale.createdAt && typeof sale.createdAt.toDate === 'function') {
-          timeText = sale.createdAt.toDate().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-        }
         return `
           <div class="sale-row">
             <div class="sale-top">
@@ -323,7 +288,7 @@
               <span>${euro(sale.total || 0)}</span>
             </div>
             <div>${itemsText || 'Nessun articolo'}</div>
-            <div style="margin-top:4px;">Pagato: ${euro(sale.paid || 0)} · Resto: ${euro(sale.change || 0)} ${timeText ? '· ' + timeText : ''}</div>
+            <div style="margin-top:4px;">Pagato: ${euro(sale.paid || 0)} · Resto: ${euro(sale.change || 0)}${sale.time ? ' · ' + sale.time : ''}</div>
           </div>
         `;
       }).join('');
@@ -337,6 +302,7 @@
 
       saleTotalEl.textContent = euro(totalSale());
       changeValueEl.textContent = euro(changeValueCalc());
+      cashierNameInput.value = state.cashier;
       document.getElementById('live-birra').textContent = state.live.birra || 0;
       document.getElementById('live-spritz').textContent = state.live.spritz || 0;
       document.getElementById('live-gin').textContent = state.live.gin || 0;
@@ -364,75 +330,67 @@
       updateUI();
     }
 
-    async function initDb() {
-      await setDoc(statsRef, {
-        birra: 0,
-        spritz: 0,
-        gin: 0,
-        acqua: 0,
-        totalCash: 0,
-        createdAt: serverTimestamp()
-      }, { merge: true });
-
-      onSnapshot(statsRef, snap => {
-        if (snap.exists()) {
-          const d = snap.data();
-          state.live = {
-            birra: d.birra || 0,
-            spritz: d.spritz || 0,
-            gin: d.gin || 0,
-            acqua: d.acqua || 0,
-            totalCash: d.totalCash || 0
-          };
-          updateUI();
-        }
-      });
-
-      const qSales = query(collection(db, 'efm26_sales'), orderBy('createdAt', 'desc'), limit(20));
-      onSnapshot(qSales, snap => {
-        state.recentSales = snap.docs.map(x => ({ id: x.id, ...x.data() }));
-        updateUI();
-      });
-    }
-
     async function saveSale() {
       const total = totalSale();
       const paid = Number(state.paid) || 0;
       const change = changeValueCalc();
       if (!hasItems() || paid < total || !state.cashier.trim()) return;
 
+      const sale = {
+        cashier: state.cashier.trim(),
+        items: { ...state.items },
+        total,
+        paid,
+        change,
+        time: new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
+      };
+
       confirmBtn.disabled = true;
       statusEl.textContent = 'Salvataggio in corso...';
 
       try {
-        await updateDoc(statsRef, {
-          birra: increment(state.items.birra),
-          spritz: increment(state.items.spritz),
-          gin: increment(state.items.gin),
-          acqua: increment(state.items.acqua),
-          totalCash: increment(total)
-        });
+        if (state.firebaseReady && state.db && state.statsRef) {
+          await state.statsRef.set({
+            birra: (state.live.birra || 0) + state.items.birra,
+            spritz: (state.live.spritz || 0) + state.items.spritz,
+            gin: (state.live.gin || 0) + state.items.gin,
+            acqua: (state.live.acqua || 0) + state.items.acqua,
+            totalCash: (state.live.totalCash || 0) + total,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
 
-        await addDoc(collection(db, 'efm26_sales'), {
-          cashier: state.cashier.trim(),
-          items: { ...state.items },
-          total,
-          paid,
-          change,
-          createdAt: serverTimestamp()
-        });
+          await state.db.collection('efm26_sales').add({
+            ...sale,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
 
-        statusEl.textContent = 'Vendita registrata.';
+        state.live.birra += state.items.birra;
+        state.live.spritz += state.items.spritz;
+        state.live.gin += state.items.gin;
+        state.live.acqua += state.items.acqua;
+        state.live.totalCash += total;
+        state.recentSales.unshift(sale);
+        saveLocalState();
         resetCurrentSale();
+        statusEl.textContent = state.firebaseReady ? 'Vendita registrata online.' : 'Vendita registrata in locale.';
       } catch (err) {
         console.error(err);
-        statusEl.textContent = 'Errore di salvataggio.';
+        statusEl.textContent = 'Errore di salvataggio online. Vendita salvata solo in locale.';
+        state.live.birra += state.items.birra;
+        state.live.spritz += state.items.spritz;
+        state.live.gin += state.items.gin;
+        state.live.acqua += state.items.acqua;
+        state.live.totalCash += total;
+        state.recentSales.unshift(sale);
+        saveLocalState();
+        resetCurrentSale();
       }
     }
 
     cashierNameInput.addEventListener('input', () => {
       state.cashier = cashierNameInput.value;
-      localStorage.setItem('efm26_cashier', state.cashier);
+      saveLocalState();
       updateUI();
     });
 
@@ -448,14 +406,21 @@
       statusEl.textContent = 'Ordine corrente azzerato.';
     });
 
-    exportBtn.addEventListener('click', async () => {
+    exportBtn.addEventListener('click', () => {
       try {
-        const snap = await getDocs(query(collection(db, 'efm26_sales'), orderBy('createdAt', 'desc')));
-        const rows = [['data','cassiere','birra','spritz','gin_tonic','acqua','totale','pagato','resto']];
-        snap.forEach(docu => {
-          const s = docu.data();
-          const d = s.createdAt && typeof s.createdAt.toDate === 'function' ? s.createdAt.toDate().toLocaleString('it-IT') : '';
-          rows.push([d, s.cashier || '', s.items?.birra || 0, s.items?.spritz || 0, s.items?.gin || 0, s.items?.acqua || 0, s.total || 0, s.paid || 0, s.change || 0]);
+        const rows = [['ora','cassiere','birra','spritz','gin_tonic','acqua','totale','pagato','resto']];
+        state.recentSales.forEach(s => {
+          rows.push([
+            s.time || '',
+            s.cashier || '',
+            s.items?.birra || 0,
+            s.items?.spritz || 0,
+            s.items?.gin || 0,
+            s.items?.acqua || 0,
+            s.total || 0,
+            s.paid || 0,
+            s.change || 0
+          ]);
         });
         const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(';')).join('
 ');
@@ -479,26 +444,91 @@
         statusEl.textContent = 'Password errata.';
         return;
       }
-      try {
-        await setDoc(statsRef, {
-          birra: 0,
-          spritz: 0,
-          gin: 0,
-          acqua: 0,
-          totalCash: 0,
-          resetAt: serverTimestamp()
-        }, { merge: true });
-        statusEl.textContent = 'Incassi live azzerati.';
-      } catch (err) {
-        console.error(err);
-        statusEl.textContent = 'Errore durante reset.';
+      state.live = { birra: 0, spritz: 0, gin: 0, acqua: 0, totalCash: 0 };
+      state.recentSales = [];
+      saveLocalState();
+      updateUI();
+      statusEl.textContent = 'Incassi azzerati.';
+
+      if (state.firebaseReady && state.statsRef) {
+        try {
+          await state.statsRef.set({
+            birra: 0,
+            spritz: 0,
+            gin: 0,
+            acqua: 0,
+            totalCash: 0,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+        } catch (err) {
+          console.error(err);
+        }
       }
     });
 
-    cashierNameInput.value = state.cashier;
+    function initFirebaseOptional() {
+      if (!window.firebase || !firebase.apps) {
+        syncInfo.textContent = 'Modalità locale attiva. Il menu bibite funziona già.';
+        return;
+      }
+
+      try {
+        const firebaseConfig = {
+          apiKey: 'AIzaSyDAtBACOSyWpMla4yAA9_bQ5oxY3NRIibg',
+          authDomain: 'efm-26-cassa.firebaseapp.com',
+          projectId: 'efm-26-cassa',
+          storageBucket: 'efm-26-cassa.firebasestorage.app',
+          messagingSenderId: '472657128260',
+          appId: '1:472657128260:web:a4646ffebe71c03fad0511'
+        };
+
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        state.db = firebase.firestore();
+        state.statsRef = state.db.collection('efm26').doc('stats');
+        state.firebaseReady = true;
+        syncInfo.textContent = 'Sincronizzazione online attiva.';
+
+        state.statsRef.onSnapshot((snap) => {
+          if (snap.exists) {
+            const d = snap.data() || {};
+            state.live = {
+              birra: d.birra || 0,
+              spritz: d.spritz || 0,
+              gin: d.gin || 0,
+              acqua: d.acqua || 0,
+              totalCash: d.totalCash || 0
+            };
+            saveLocalState();
+            updateUI();
+          }
+        });
+
+        state.db.collection('efm26_sales').orderBy('createdAt', 'desc').limit(20).onSnapshot((snap) => {
+          state.recentSales = snap.docs.map(doc => {
+            const data = doc.data();
+            let time = data.time || '';
+            if (data.createdAt && data.createdAt.toDate) {
+              time = data.createdAt.toDate().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+            }
+            return { ...data, time };
+          });
+          saveLocalState();
+          updateUI();
+        });
+      } catch (err) {
+        console.error(err);
+        syncInfo.textContent = 'Menu attivo. Sync online non riuscita, uso locale.';
+      }
+    }
+
     renderProducts();
+    cashierNameInput.value = state.cashier;
     updateUI();
-    initDb();
+    syncInfo.textContent = 'Menu bibite caricato.';
+    window.addEventListener('load', initFirebaseOptional);
   </script>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 </body>
 </html>
