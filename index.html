@@ -24,11 +24,7 @@
       color: var(--text);
       min-height: 100vh;
     }
-    .wrap {
-      max-width: 820px;
-      margin: 0 auto;
-      padding: 14px;
-    }
+    .wrap { max-width: 820px; margin: 0 auto; padding: 14px; }
     .title {
       text-align: center;
       font-size: 34px;
@@ -44,11 +40,7 @@
       margin-bottom: 14px;
       box-shadow: 0 8px 24px rgba(0,0,0,.25);
     }
-    .section-title {
-      font-size: 22px;
-      font-weight: 800;
-      margin-bottom: 12px;
-    }
+    .section-title { font-size: 22px; font-weight: 800; margin-bottom: 12px; }
     .product {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -69,6 +61,7 @@
       cursor: pointer;
       font-size: 26px;
       font-weight: 800;
+      touch-action: manipulation;
     }
     .plus { background: var(--green); color: #052e16; }
     .minus { background: #fca5a5; color: #450a0a; }
@@ -95,6 +88,7 @@
       font-size: 21px;
       font-weight: 800;
       margin-top: 12px;
+      touch-action: manipulation;
     }
     .btn-main { background: var(--yellow); color: #1f1300; }
     .btn-main:disabled { opacity: .45; cursor: not-allowed; }
@@ -108,7 +102,7 @@
     }
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2,1fr);
       gap: 10px;
     }
     .stat {
@@ -127,11 +121,11 @@
       font-size: 14px;
     }
     .sale-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      font-weight: 700;
-      margin-bottom: 4px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      font-weight:700;
+      margin-bottom:4px;
     }
     @media (max-width: 640px) {
       .title { font-size: 28px; }
@@ -146,7 +140,7 @@
     <div class="card">
       <div class="section-title">Cassiere</div>
       <input type="text" id="cashierName" placeholder="Nome cassiere" maxlength="30">
-      <p class="small" style="margin-top:10px;">Il nome viene salvato nel dispositivo.</p>
+      <p class="small" style="margin-top:10px;">Il nome viene salvato insieme a ogni vendita.</p>
     </div>
 
     <div class="card">
@@ -223,7 +217,7 @@
     </div>
 
     <div class="card">
-      <div class="section-title">Statistiche locali</div>
+      <div class="section-title">Statistiche live</div>
       <div class="stats-grid">
         <div class="stat"><div class="label">Birre</div><div class="n" id="live-birra">0</div></div>
         <div class="stat"><div class="label">Spritz</div><div class="n" id="live-spritz">0</div></div>
@@ -234,6 +228,7 @@
         <div class="label">Incasso totale</div>
         <div class="value" id="live-total">€ 0,00</div>
       </div>
+      <p class="small" id="syncInfo" style="margin-top:10px;">Connessione online in avvio...</p>
     </div>
 
     <div class="card">
@@ -244,14 +239,25 @@
     </div>
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
   <script>
     (function () {
+      const firebaseConfig = {
+        apiKey: 'AIzaSyDAtBACOSyWpMla4yAA9_bQ5oxY3NRIibg',
+        authDomain: 'efm-26-cassa.firebaseapp.com',
+        projectId: 'efm-26-cassa',
+        storageBucket: 'efm-26-cassa.firebasestorage.app',
+        messagingSenderId: '472657128260',
+        appId: '1:472657128260:web:a4646ffebe71c03fad0511'
+      };
+
       const state = {
         cashier: localStorage.getItem('efm26_cashier') || '',
         paid: 0,
         items: { birra: 0, spritz: 0, gin: 0, acqua: 0 },
-        live: JSON.parse(localStorage.getItem('efm26_live') || '{"birra":0,"spritz":0,"gin":0,"acqua":0,"totalCash":0}'),
-        sales: JSON.parse(localStorage.getItem('efm26_sales') || '[]')
+        live: { birra: 0, spritz: 0, gin: 0, acqua: 0, totalCash: 0 },
+        sales: []
       };
 
       const prices = { birra: 6, spritz: 6, gin: 10, acqua: 2.5 };
@@ -265,15 +271,14 @@
       const resetTotalsBtn = document.getElementById('resetTotalsBtn');
       const statusEl = document.getElementById('status');
       const salesListEl = document.getElementById('salesList');
+      const syncInfoEl = document.getElementById('syncInfo');
+
+      let db = null;
+      let statsRef = null;
+      let salesRef = null;
 
       function euro(v) {
         return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(v || 0);
-      }
-
-      function saveState() {
-        localStorage.setItem('efm26_cashier', state.cashier);
-        localStorage.setItem('efm26_live', JSON.stringify(state.live));
-        localStorage.setItem('efm26_sales', JSON.stringify(state.sales.slice(0, 50)));
       }
 
       function totalSale() {
@@ -289,14 +294,14 @@
           return;
         }
         salesListEl.innerHTML = state.sales.slice(0, 20).map(function (sale) {
-          const itemsText = Object.keys(sale.items)
-            .filter(function (k) { return sale.items[k] > 0; })
+          const itemsText = Object.keys(sale.items || {})
+            .filter(function (k) { return (sale.items[k] || 0) > 0; })
             .map(function (k) { return labels[k] + ' x' + sale.items[k]; })
             .join(', ');
           return '<div class="sale-row">'
             + '<div class="sale-top"><span>' + (sale.cashier || 'Cassiere') + '</span><span>' + euro(sale.total) + '</span></div>'
             + '<div>' + itemsText + '</div>'
-            + '<div style="margin-top:4px;">Pagato: ' + euro(sale.paid) + ' · Resto: ' + euro(sale.change) + ' · ' + sale.time + '</div>'
+            + '<div style="margin-top:4px;">Pagato: ' + euro(sale.paid) + ' · Resto: ' + euro(sale.change) + (sale.time ? ' · ' + sale.time : '') + '</div>'
             + '</div>';
         }).join('');
       }
@@ -308,11 +313,11 @@
         document.getElementById('qty-gin').textContent = state.items.gin;
         document.getElementById('qty-acqua').textContent = state.items.acqua;
         document.getElementById('saleTotal').textContent = euro(totalSale());
-        document.getElementById('live-birra').textContent = state.live.birra;
-        document.getElementById('live-spritz').textContent = state.live.spritz;
-        document.getElementById('live-gin').textContent = state.live.gin;
-        document.getElementById('live-acqua').textContent = state.live.acqua;
-        document.getElementById('live-total').textContent = euro(state.live.totalCash);
+        document.getElementById('live-birra').textContent = state.live.birra || 0;
+        document.getElementById('live-spritz').textContent = state.live.spritz || 0;
+        document.getElementById('live-gin').textContent = state.live.gin || 0;
+        document.getElementById('live-acqua').textContent = state.live.acqua || 0;
+        document.getElementById('live-total').textContent = euro(state.live.totalCash || 0);
 
         const paid = Number(state.paid) || 0;
         const total = totalSale();
@@ -331,12 +336,78 @@
         }
 
         renderSales();
-        saveState();
       }
 
       function changeQty(key, delta) {
         state.items[key] = Math.max(0, state.items[key] + delta);
         updateUI();
+      }
+
+      function resetCurrentSale() {
+        state.items = { birra: 0, spritz: 0, gin: 0, acqua: 0 };
+        state.paid = 0;
+        paidInput.value = '';
+        updateUI();
+      }
+
+      async function initOnline() {
+        try {
+          if (!window.firebase) throw new Error('Firebase non caricato');
+
+          if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+          }
+
+          db = firebase.firestore();
+          statsRef = db.collection('efm26').doc('stats');
+          salesRef = db.collection('efm26_sales');
+
+          await statsRef.set({
+            birra: 0,
+            spritz: 0,
+            gin: 0,
+            acqua: 0,
+            totalCash: 0,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+
+          statsRef.onSnapshot(function (snap) {
+            if (snap.exists) {
+              const d = snap.data() || {};
+              state.live = {
+                birra: d.birra || 0,
+                spritz: d.spritz || 0,
+                gin: d.gin || 0,
+                acqua: d.acqua || 0,
+                totalCash: d.totalCash || 0
+              };
+              updateUI();
+            }
+          }, function (err) {
+            console.error(err);
+            syncInfoEl.textContent = 'Errore lettura statistiche online.';
+          });
+
+          salesRef.orderBy('createdAt', 'desc').limit(20).onSnapshot(function (snap) {
+            state.sales = snap.docs.map(function (doc) {
+              const data = doc.data() || {};
+              let time = data.time || '';
+              if (data.createdAt && data.createdAt.toDate) {
+                time = data.createdAt.toDate().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+              }
+              return Object.assign({}, data, { time: time });
+            });
+            updateUI();
+          }, function (err) {
+            console.error(err);
+            syncInfoEl.textContent = 'Errore lettura vendite online.';
+          });
+
+          syncInfoEl.textContent = 'Sincronizzazione online attiva.';
+        } catch (err) {
+          console.error(err);
+          syncInfoEl.textContent = 'Sync online non riuscita. Controlla Firestore Rules.';
+        }
       }
 
       document.querySelectorAll('[data-key][data-delta]').forEach(function (btn) {
@@ -349,6 +420,7 @@
 
       cashierInput.addEventListener('input', function () {
         state.cashier = cashierInput.value;
+        localStorage.setItem('efm26_cashier', state.cashier);
         updateUI();
       });
 
@@ -358,63 +430,89 @@
       });
 
       clearBtn.addEventListener('click', function () {
-        state.items = { birra: 0, spritz: 0, gin: 0, acqua: 0 };
-        state.paid = 0;
-        paidInput.value = '';
-        updateUI();
+        resetCurrentSale();
         statusEl.textContent = 'Ordine corrente azzerato.';
       });
 
-      confirmBtn.addEventListener('click', function () {
+      confirmBtn.addEventListener('click', async function () {
+        if (!db || !statsRef || !salesRef) {
+          statusEl.textContent = 'Online non attivo.';
+          return;
+        }
+
         const total = totalSale();
         const paid = Number(state.paid) || 0;
         const change = Math.max(0, paid - total);
+        const orderItems = { ...state.items };
 
-        const sale = {
-          cashier: state.cashier.trim(),
-          items: { ...state.items },
-          total: total,
-          paid: paid,
-          change: change,
-          time: new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
-        };
+        try {
+          statusEl.textContent = 'Salvataggio in corso...';
 
-        state.live.birra += state.items.birra;
-        state.live.spritz += state.items.spritz;
-        state.live.gin += state.items.gin;
-        state.live.acqua += state.items.acqua;
-        state.live.totalCash += total;
-        state.sales.unshift(sale);
+          await statsRef.update({
+            birra: firebase.firestore.FieldValue.increment(orderItems.birra),
+            spritz: firebase.firestore.FieldValue.increment(orderItems.spritz),
+            gin: firebase.firestore.FieldValue.increment(orderItems.gin),
+            acqua: firebase.firestore.FieldValue.increment(orderItems.acqua),
+            totalCash: firebase.firestore.FieldValue.increment(total)
+          });
 
-        state.items = { birra: 0, spritz: 0, gin: 0, acqua: 0 };
-        state.paid = 0;
-        paidInput.value = '';
-        updateUI();
-        statusEl.textContent = 'Vendita registrata.';
+          await salesRef.add({
+            cashier: state.cashier.trim(),
+            items: orderItems,
+            total: total,
+            paid: paid,
+            change: change,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            time: new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
+          });
+
+          resetCurrentSale();
+          statusEl.textContent = 'Vendita registrata online.';
+        } catch (err) {
+          console.error(err);
+          statusEl.textContent = 'Errore di salvataggio online.';
+        }
       });
 
-      resetTotalsBtn.addEventListener('click', function () {
+      resetTotalsBtn.addEventListener('click', async function () {
+        if (!db || !statsRef) {
+          statusEl.textContent = 'Online non attivo.';
+          return;
+        }
+
         const password = prompt('Inserisci la password di reset');
         if (password !== 'EFM26RESET') {
           statusEl.textContent = 'Password errata.';
           return;
         }
-        state.live = { birra: 0, spritz: 0, gin: 0, acqua: 0, totalCash: 0 };
-        state.sales = [];
-        updateUI();
-        statusEl.textContent = 'Incassi azzerati.';
+
+        try {
+          await statsRef.set({
+            birra: 0,
+            spritz: 0,
+            gin: 0,
+            acqua: 0,
+            totalCash: 0,
+            resetAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+          statusEl.textContent = 'Incassi azzerati.';
+        } catch (err) {
+          console.error(err);
+          statusEl.textContent = 'Errore durante reset.';
+        }
       });
 
       exportBtn.addEventListener('click', function () {
         const rows = [['ora','cassiere','birra','spritz','gin_tonic','acqua','totale','pagato','resto']];
         state.sales.forEach(function (s) {
-          rows.push([s.time, s.cashier, s.items.birra, s.items.spritz, s.items.gin, s.items.acqua, s.total, s.paid, s.change]);
+          rows.push([s.time || '', s.cashier || '', s.items?.birra || 0, s.items?.spritz || 0, s.items?.gin || 0, s.items?.acqua || 0, s.total || 0, s.paid || 0, s.change || 0]);
         });
         const csv = rows.map(function (r) {
           return r.map(function (v) {
             return '"' + String(v).replace(/"/g, '""') + '"';
           }).join(';');
-        }).join('\n');
+        }).join('
+');
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -426,6 +524,7 @@
       });
 
       updateUI();
+      initOnline();
     })();
   </script>
 </body>
