@@ -6,128 +6,136 @@
   <title>EFM 26</title>
   <style>
     :root {
-      --bg:#0f172a;
-      --card:#111827;
-      --card2:#1f2937;
-      --text:#f8fafc;
-      --muted:#cbd5e1;
-      --line:#334155;
-      --green:#22c55e;
-      --red:#ef4444;
-      --yellow:#f59e0b;
+      --bg: #0f172a;
+      --card: #111827;
+      --card2: #1f2937;
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --line: #334155;
+      --green: #22c55e;
+      --red: #ef4444;
+      --yellow: #f59e0b;
     }
-    * { box-sizing:border-box; }
+    * { box-sizing: border-box; }
     body {
-      margin:0;
-      font-family:Arial, Helvetica, sans-serif;
-      background:linear-gradient(180deg,#0f172a,#111827);
-      color:var(--text);
-      min-height:100vh;
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #0f172a, #111827);
+      color: var(--text);
+      min-height: 100vh;
     }
-    .wrap { max-width:820px; margin:0 auto; padding:14px; }
+    .wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 14px;
+    }
     .title {
-      text-align:center;
-      font-size:34px;
-      font-weight:800;
-      margin:10px 0 16px;
-      color:#fde68a;
+      text-align: center;
+      font-size: 34px;
+      font-weight: 800;
+      margin: 10px 0 16px;
+      color: #fde68a;
     }
     .card {
-      background:rgba(17,24,39,.96);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:14px;
-      margin-bottom:14px;
-      box-shadow:0 8px 24px rgba(0,0,0,.25);
+      background: rgba(17,24,39,.96);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
     }
-    .section-title { font-size:22px; font-weight:800; margin-bottom:12px; }
+    .section-title {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
     .product {
-      display:grid;
-      grid-template-columns:1fr auto;
-      gap:12px;
-      align-items:center;
-      padding:12px 0;
-      border-bottom:1px solid rgba(255,255,255,.08);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
-    .product:last-child { border-bottom:0; }
-    .product-name { font-size:22px; font-weight:700; }
-    .price { color:var(--muted); font-size:16px; display:block; margin-top:4px; }
-    .qty-box { display:flex; align-items:center; gap:10px; }
+    .product:last-child { border-bottom: 0; }
+    .product-name { font-size: 22px; font-weight: 700; }
+    .price { color: var(--muted); font-size: 16px; display: block; margin-top: 4px; }
+    .qty-box { display: flex; align-items: center; gap: 10px; }
     .qty-btn {
-      width:52px;
-      height:52px;
-      border:none;
-      border-radius:12px;
-      cursor:pointer;
-      font-size:26px;
-      font-weight:800;
+      width: 52px;
+      height: 52px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 26px;
+      font-weight: 800;
     }
-    .plus { background:var(--green); color:#052e16; }
-    .minus { background:#fca5a5; color:#450a0a; }
-    .qty { min-width:34px; text-align:center; font-size:28px; font-weight:800; }
-    .box { background:var(--card2); border-radius:14px; padding:14px; }
-    .label { color:var(--muted); font-size:14px; margin-bottom:6px; }
-    .value { font-size:30px; font-weight:800; }
+    .plus { background: var(--green); color: #052e16; }
+    .minus { background: #fca5a5; color: #450a0a; }
+    .qty { min-width: 34px; text-align: center; font-size: 28px; font-weight: 800; }
+    .box { background: var(--card2); border-radius: 14px; padding: 14px; }
+    .label { color: var(--muted); font-size: 14px; margin-bottom: 6px; }
+    .value { font-size: 30px; font-weight: 800; }
     input {
-      width:100%;
-      padding:14px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:#0b1220;
-      color:white;
-      font-size:22px;
-      outline:none;
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #0b1220;
+      color: white;
+      font-size: 22px;
+      outline: none;
     }
     .btn {
-      width:100%;
-      padding:15px;
-      border:none;
-      border-radius:14px;
-      cursor:pointer;
-      font-size:21px;
-      font-weight:800;
-      margin-top:12px;
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      font-size: 21px;
+      font-weight: 800;
+      margin-top: 12px;
     }
-    .btn-main { background:var(--yellow); color:#1f1300; }
-    .btn-main:disabled { opacity:.45; cursor:not-allowed; }
-    .btn-danger { background:var(--red); color:white; }
+    .btn-main { background: var(--yellow); color: #1f1300; }
+    .btn-main:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-danger { background: var(--red); color: white; }
     .status {
-      text-align:center;
-      min-height:18px;
-      margin-top:10px;
-      font-size:14px;
-      color:#93c5fd;
+      text-align: center;
+      min-height: 18px;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #93c5fd;
     }
     .stats-grid {
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:10px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
     }
     .stat {
-      background:var(--card2);
-      border-radius:12px;
-      padding:12px;
-      text-align:center;
+      background: var(--card2);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
     }
-    .stat .n { font-size:24px; font-weight:800; }
-    .small { color:var(--muted); font-size:13px; line-height:1.45; }
+    .stat .n { font-size: 24px; font-weight: 800; }
+    .small { color: var(--muted); font-size: 13px; line-height: 1.45; }
     .sale-row {
-      background:var(--card2);
-      border-radius:12px;
-      padding:10px;
-      margin-bottom:8px;
-      font-size:14px;
+      background: var(--card2);
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 8px;
+      font-size: 14px;
     }
     .sale-top {
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      font-weight:700;
-      margin-bottom:4px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-weight: 700;
+      margin-bottom: 4px;
     }
-    @media (max-width:640px) {
-      .title { font-size:28px; }
-      .product-name { font-size:20px; }
+    @media (max-width: 640px) {
+      .title { font-size: 28px; }
+      .product-name { font-size: 20px; }
     }
   </style>
 </head>
@@ -138,7 +146,7 @@
     <div class="card">
       <div class="section-title">Cassiere</div>
       <input type="text" id="cashierName" placeholder="Nome cassiere" maxlength="30">
-      <p class="small" style="margin-top:10px;">Il nome viene salvato insieme a ogni vendita.</p>
+      <p class="small" style="margin-top:10px;">Il nome viene salvato nel dispositivo.</p>
     </div>
 
     <div class="card">
@@ -150,9 +158,9 @@
           <span class="price">€ 6,00</span>
         </div>
         <div class="qty-box">
-          <button type="button" class="qty-btn minus" id="minus-birra">−</button>
+          <button type="button" class="qty-btn minus" data-key="birra" data-delta="-1">−</button>
           <div class="qty" id="qty-birra">0</div>
-          <button type="button" class="qty-btn plus" id="plus-birra">+</button>
+          <button type="button" class="qty-btn plus" data-key="birra" data-delta="1">+</button>
         </div>
       </div>
 
@@ -162,9 +170,9 @@
           <span class="price">€ 6,00</span>
         </div>
         <div class="qty-box">
-          <button type="button" class="qty-btn minus" id="minus-spritz">−</button>
+          <button type="button" class="qty-btn minus" data-key="spritz" data-delta="-1">−</button>
           <div class="qty" id="qty-spritz">0</div>
-          <button type="button" class="qty-btn plus" id="plus-spritz">+</button>
+          <button type="button" class="qty-btn plus" data-key="spritz" data-delta="1">+</button>
         </div>
       </div>
 
@@ -174,9 +182,9 @@
           <span class="price">€ 10,00</span>
         </div>
         <div class="qty-box">
-          <button type="button" class="qty-btn minus" id="minus-gin">−</button>
+          <button type="button" class="qty-btn minus" data-key="gin" data-delta="-1">−</button>
           <div class="qty" id="qty-gin">0</div>
-          <button type="button" class="qty-btn plus" id="plus-gin">+</button>
+          <button type="button" class="qty-btn plus" data-key="gin" data-delta="1">+</button>
         </div>
       </div>
 
@@ -186,9 +194,9 @@
           <span class="price">€ 2,50</span>
         </div>
         <div class="qty-box">
-          <button type="button" class="qty-btn minus" id="minus-acqua">−</button>
+          <button type="button" class="qty-btn minus" data-key="acqua" data-delta="-1">−</button>
           <div class="qty" id="qty-acqua">0</div>
-          <button type="button" class="qty-btn plus" id="plus-acqua">+</button>
+          <button type="button" class="qty-btn plus" data-key="acqua" data-delta="1">+</button>
         </div>
       </div>
     </div>
@@ -215,7 +223,7 @@
     </div>
 
     <div class="card">
-      <div class="section-title">Statistiche live</div>
+      <div class="section-title">Statistiche locali</div>
       <div class="stats-grid">
         <div class="stat"><div class="label">Birre</div><div class="n" id="live-birra">0</div></div>
         <div class="stat"><div class="label">Spritz</div><div class="n" id="live-spritz">0</div></div>
@@ -226,7 +234,6 @@
         <div class="label">Incasso totale</div>
         <div class="value" id="live-total">€ 0,00</div>
       </div>
-      <p class="small" style="margin-top:10px;">Versione stabile locale. Dopo rimettiamo la sincronizzazione online.</p>
     </div>
 
     <div class="card">
@@ -238,172 +245,188 @@
   </div>
 
   <script>
-    const PRICES = { birra: 6, spritz: 6, gin: 10, acqua: 2.5 };
-    const NAMES = { birra: 'Birra', spritz: 'Spritz', gin: 'Gin Tonic', acqua: 'Acqua' };
-
-    const state = {
-      cashier: localStorage.getItem('efm26_cashier') || '',
-      paid: 0,
-      items: JSON.parse(localStorage.getItem('efm26_items') || '{"birra":0,"spritz":0,"gin":0,"acqua":0}'),
-      live: JSON.parse(localStorage.getItem('efm26_live') || '{"birra":0,"spritz":0,"gin":0,"acqua":0,"totalCash":0}'),
-      sales: JSON.parse(localStorage.getItem('efm26_sales') || '[]')
-    };
-
-    function euro(v) {
-      return new Intl.NumberFormat('it-IT', { style:'currency', currency:'EUR' }).format(v || 0);
-    }
-
-    function persist() {
-      localStorage.setItem('efm26_cashier', state.cashier);
-      localStorage.setItem('efm26_items', JSON.stringify(state.items));
-      localStorage.setItem('efm26_live', JSON.stringify(state.live));
-      localStorage.setItem('efm26_sales', JSON.stringify(state.sales.slice(0, 50)));
-    }
-
-    function totalSale() {
-      return (state.items.birra * 6) + (state.items.spritz * 6) + (state.items.gin * 10) + (state.items.acqua * 2.5);
-    }
-
-    function renderSales() {
-      const box = document.getElementById('salesList');
-      if (!state.sales.length) {
-        box.innerHTML = 'Nessuna vendita registrata.';
-        return;
-      }
-      box.innerHTML = state.sales.slice(0, 20).map(sale => {
-        const itemsText = Object.keys(sale.items)
-          .filter(k => sale.items[k] > 0)
-          .map(k => NAMES[k] + ' x' + sale.items[k])
-          .join(', ');
-        return '<div class="sale-row">'
-          + '<div class="sale-top"><span>' + (sale.cashier || 'Cassiere') + '</span><span>' + euro(sale.total) + '</span></div>'
-          + '<div>' + itemsText + '</div>'
-          + '<div style="margin-top:4px;">Pagato: ' + euro(sale.paid) + ' · Resto: ' + euro(sale.change) + ' · ' + sale.time + '</div>'
-          + '</div>';
-      }).join('');
-    }
-
-    function updateUI() {
-      document.getElementById('cashierName').value = state.cashier;
-      document.getElementById('qty-birra').textContent = state.items.birra;
-      document.getElementById('qty-spritz').textContent = state.items.spritz;
-      document.getElementById('qty-gin').textContent = state.items.gin;
-      document.getElementById('qty-acqua').textContent = state.items.acqua;
-      document.getElementById('saleTotal').textContent = euro(totalSale());
-      document.getElementById('live-birra').textContent = state.live.birra;
-      document.getElementById('live-spritz').textContent = state.live.spritz;
-      document.getElementById('live-gin').textContent = state.live.gin;
-      document.getElementById('live-acqua').textContent = state.live.acqua;
-      document.getElementById('live-total').textContent = euro(state.live.totalCash);
-
-      const change = Math.max(0, (Number(state.paid) || 0) - totalSale());
-      document.getElementById('changeValue').textContent = euro(change);
-
-      const status = document.getElementById('status');
-      const canConfirm = state.cashier.trim() && totalSale() > 0 && (Number(state.paid) || 0) >= totalSale();
-      document.getElementById('confirmBtn').disabled = !canConfirm;
-
-      if (!state.cashier.trim()) {
-        status.textContent = 'Inserisci il nome del cassiere.';
-      } else if (totalSale() > 0 && (Number(state.paid) || 0) < totalSale()) {
-        status.textContent = 'Importo insufficiente: manca ' + euro(totalSale() - (Number(state.paid) || 0));
-      } else {
-        status.textContent = '';
-      }
-
-      renderSales();
-      persist();
-    }
-
-    function changeQty(key, delta) {
-      state.items[key] = Math.max(0, state.items[key] + delta);
-      updateUI();
-    }
-
-    document.getElementById('cashierName').addEventListener('input', function() {
-      state.cashier = this.value;
-      updateUI();
-    });
-
-    document.getElementById('paidInput').addEventListener('input', function() {
-      state.paid = Number(this.value) || 0;
-      updateUI();
-    });
-
-    document.getElementById('clearBtn').addEventListener('click', function() {
-      state.items = { birra:0, spritz:0, gin:0, acqua:0 };
-      state.paid = 0;
-      document.getElementById('paidInput').value = '';
-      updateUI();
-    });
-
-    document.getElementById('confirmBtn').addEventListener('click', function() {
-      const total = totalSale();
-      const paid = Number(state.paid) || 0;
-      const change = Math.max(0, paid - total);
-
-      const sale = {
-        cashier: state.cashier.trim(),
-        items: { ...state.items },
-        total: total,
-        paid: paid,
-        change: change,
-        time: new Date().toLocaleTimeString('it-IT', { hour:'2-digit', minute:'2-digit' })
+    (function () {
+      const state = {
+        cashier: localStorage.getItem('efm26_cashier') || '',
+        paid: 0,
+        items: { birra: 0, spritz: 0, gin: 0, acqua: 0 },
+        live: JSON.parse(localStorage.getItem('efm26_live') || '{"birra":0,"spritz":0,"gin":0,"acqua":0,"totalCash":0}'),
+        sales: JSON.parse(localStorage.getItem('efm26_sales') || '[]')
       };
 
-      state.live.birra += state.items.birra;
-      state.live.spritz += state.items.spritz;
-      state.live.gin += state.items.gin;
-      state.live.acqua += state.items.acqua;
-      state.live.totalCash += total;
-      state.sales.unshift(sale);
+      const prices = { birra: 6, spritz: 6, gin: 10, acqua: 2.5 };
+      const labels = { birra: 'Birra', spritz: 'Spritz', gin: 'Gin Tonic', acqua: 'Acqua' };
 
-      state.items = { birra:0, spritz:0, gin:0, acqua:0 };
-      state.paid = 0;
-      document.getElementById('paidInput').value = '';
-      updateUI();
-      document.getElementById('status').textContent = 'Vendita registrata.';
-    });
+      const cashierInput = document.getElementById('cashierName');
+      const paidInput = document.getElementById('paidInput');
+      const confirmBtn = document.getElementById('confirmBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const exportBtn = document.getElementById('exportBtn');
+      const resetTotalsBtn = document.getElementById('resetTotalsBtn');
+      const statusEl = document.getElementById('status');
+      const salesListEl = document.getElementById('salesList');
 
-    document.getElementById('resetTotalsBtn').addEventListener('click', function() {
-      const password = prompt('Inserisci la password di reset');
-      if (password !== 'EFM26RESET') {
-        document.getElementById('status').textContent = 'Password errata.';
-        return;
+      function euro(v) {
+        return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(v || 0);
       }
-      state.live = { birra:0, spritz:0, gin:0, acqua:0, totalCash:0 };
-      state.sales = [];
-      updateUI();
-      document.getElementById('status').textContent = 'Incassi azzerati.';
-    });
 
-    document.getElementById('exportBtn').addEventListener('click', function() {
-      const rows = [['ora','cassiere','birra','spritz','gin_tonic','acqua','totale','pagato','resto']];
-      state.sales.forEach(function(s) {
-        rows.push([s.time, s.cashier, s.items.birra, s.items.spritz, s.items.gin, s.items.acqua, s.total, s.paid, s.change]);
+      function saveState() {
+        localStorage.setItem('efm26_cashier', state.cashier);
+        localStorage.setItem('efm26_live', JSON.stringify(state.live));
+        localStorage.setItem('efm26_sales', JSON.stringify(state.sales.slice(0, 50)));
+      }
+
+      function totalSale() {
+        return (state.items.birra * prices.birra)
+          + (state.items.spritz * prices.spritz)
+          + (state.items.gin * prices.gin)
+          + (state.items.acqua * prices.acqua);
+      }
+
+      function renderSales() {
+        if (!state.sales.length) {
+          salesListEl.innerHTML = 'Nessuna vendita registrata.';
+          return;
+        }
+        salesListEl.innerHTML = state.sales.slice(0, 20).map(function (sale) {
+          const itemsText = Object.keys(sale.items)
+            .filter(function (k) { return sale.items[k] > 0; })
+            .map(function (k) { return labels[k] + ' x' + sale.items[k]; })
+            .join(', ');
+          return '<div class="sale-row">'
+            + '<div class="sale-top"><span>' + (sale.cashier || 'Cassiere') + '</span><span>' + euro(sale.total) + '</span></div>'
+            + '<div>' + itemsText + '</div>'
+            + '<div style="margin-top:4px;">Pagato: ' + euro(sale.paid) + ' · Resto: ' + euro(sale.change) + ' · ' + sale.time + '</div>'
+            + '</div>';
+        }).join('');
+      }
+
+      function updateUI() {
+        cashierInput.value = state.cashier;
+        document.getElementById('qty-birra').textContent = state.items.birra;
+        document.getElementById('qty-spritz').textContent = state.items.spritz;
+        document.getElementById('qty-gin').textContent = state.items.gin;
+        document.getElementById('qty-acqua').textContent = state.items.acqua;
+        document.getElementById('saleTotal').textContent = euro(totalSale());
+        document.getElementById('live-birra').textContent = state.live.birra;
+        document.getElementById('live-spritz').textContent = state.live.spritz;
+        document.getElementById('live-gin').textContent = state.live.gin;
+        document.getElementById('live-acqua').textContent = state.live.acqua;
+        document.getElementById('live-total').textContent = euro(state.live.totalCash);
+
+        const paid = Number(state.paid) || 0;
+        const total = totalSale();
+        const change = Math.max(0, paid - total);
+        document.getElementById('changeValue').textContent = euro(change);
+
+        const canConfirm = !!state.cashier.trim() && total > 0 && paid >= total;
+        confirmBtn.disabled = !canConfirm;
+
+        if (!state.cashier.trim()) {
+          statusEl.textContent = 'Inserisci il nome del cassiere.';
+        } else if (total > 0 && paid < total) {
+          statusEl.textContent = 'Importo insufficiente: manca ' + euro(total - paid);
+        } else {
+          statusEl.textContent = '';
+        }
+
+        renderSales();
+        saveState();
+      }
+
+      function changeQty(key, delta) {
+        state.items[key] = Math.max(0, state.items[key] + delta);
+        updateUI();
+      }
+
+      document.querySelectorAll('[data-key][data-delta]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const key = btn.getAttribute('data-key');
+          const delta = Number(btn.getAttribute('data-delta'));
+          changeQty(key, delta);
+        });
       });
-      const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(';')).join('
-');
-      const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'efm26_vendite.csv';
-      a.click();
-      URL.revokeObjectURL(url);
-      document.getElementById('status').textContent = 'CSV esportato.';
-    });
 
-    document.getElementById('minus-birra').addEventListener('click', function() { changeQty('birra', -1); });
-    document.getElementById('plus-birra').addEventListener('click', function() { changeQty('birra', 1); });
-    document.getElementById('minus-spritz').addEventListener('click', function() { changeQty('spritz', -1); });
-    document.getElementById('plus-spritz').addEventListener('click', function() { changeQty('spritz', 1); });
-    document.getElementById('minus-gin').addEventListener('click', function() { changeQty('gin', -1); });
-    document.getElementById('plus-gin').addEventListener('click', function() { changeQty('gin', 1); });
-    document.getElementById('minus-acqua').addEventListener('click', function() { changeQty('acqua', -1); });
-    document.getElementById('plus-acqua').addEventListener('click', function() { changeQty('acqua', 1); });
+      cashierInput.addEventListener('input', function () {
+        state.cashier = cashierInput.value;
+        updateUI();
+      });
 
-    updateUI();
+      paidInput.addEventListener('input', function () {
+        state.paid = Number(paidInput.value) || 0;
+        updateUI();
+      });
+
+      clearBtn.addEventListener('click', function () {
+        state.items = { birra: 0, spritz: 0, gin: 0, acqua: 0 };
+        state.paid = 0;
+        paidInput.value = '';
+        updateUI();
+        statusEl.textContent = 'Ordine corrente azzerato.';
+      });
+
+      confirmBtn.addEventListener('click', function () {
+        const total = totalSale();
+        const paid = Number(state.paid) || 0;
+        const change = Math.max(0, paid - total);
+
+        const sale = {
+          cashier: state.cashier.trim(),
+          items: { ...state.items },
+          total: total,
+          paid: paid,
+          change: change,
+          time: new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
+        };
+
+        state.live.birra += state.items.birra;
+        state.live.spritz += state.items.spritz;
+        state.live.gin += state.items.gin;
+        state.live.acqua += state.items.acqua;
+        state.live.totalCash += total;
+        state.sales.unshift(sale);
+
+        state.items = { birra: 0, spritz: 0, gin: 0, acqua: 0 };
+        state.paid = 0;
+        paidInput.value = '';
+        updateUI();
+        statusEl.textContent = 'Vendita registrata.';
+      });
+
+      resetTotalsBtn.addEventListener('click', function () {
+        const password = prompt('Inserisci la password di reset');
+        if (password !== 'EFM26RESET') {
+          statusEl.textContent = 'Password errata.';
+          return;
+        }
+        state.live = { birra: 0, spritz: 0, gin: 0, acqua: 0, totalCash: 0 };
+        state.sales = [];
+        updateUI();
+        statusEl.textContent = 'Incassi azzerati.';
+      });
+
+      exportBtn.addEventListener('click', function () {
+        const rows = [['ora','cassiere','birra','spritz','gin_tonic','acqua','totale','pagato','resto']];
+        state.sales.forEach(function (s) {
+          rows.push([s.time, s.cashier, s.items.birra, s.items.spritz, s.items.gin, s.items.acqua, s.total, s.paid, s.change]);
+        });
+        const csv = rows.map(function (r) {
+          return r.map(function (v) {
+            return '"' + String(v).replace(/"/g, '""') + '"';
+          }).join(';');
+        }).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'efm26_vendite.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+        statusEl.textContent = 'CSV esportato.';
+      });
+
+      updateUI();
+    })();
   </script>
 </body>
 </html>
