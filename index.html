@@ -1,289 +1,236 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EFM 26</title>
-  <style>
-    :root {
-      --bg:#0f172a; --card:#111827; --card2:#1f2937; --text:#f8fafc; --muted:#cbd5e1; --line:#334155;
-      --green:#22c55e; --red:#ef4444; --yellow:#f59e0b;
-    }
-    * { box-sizing:border-box; }
-    body { margin:0; font-family:Arial, Helvetica, sans-serif; background:linear-gradient(180deg,#0f172a,#111827); color:var(--text); min-height:100vh; }
-    .wrap { max-width:820px; margin:0 auto; padding:14px; }
-    .title { text-align:center; font-size:34px; font-weight:800; margin:10px 0 16px; color:#fde68a; }
-    .card { background:rgba(17,24,39,.96); border:1px solid var(--line); border-radius:18px; padding:14px; margin-bottom:14px; box-shadow:0 8px 24px rgba(0,0,0,.25); }
-    .section-title { font-size:22px; font-weight:800; margin-bottom:12px; }
-    .product { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,.08); }
-    .product:last-child { border-bottom:0; }
-    .product-name { font-size:22px; font-weight:700; }
-    .price { color:var(--muted); font-size:16px; display:block; margin-top:4px; }
-    .qty-box { display:flex; align-items:center; gap:10px; }
-    .qty-btn { width:52px; height:52px; border:none; border-radius:12px; cursor:pointer; font-size:26px; font-weight:800; touch-action:manipulation; }
-    .plus { background:var(--green); color:#052e16; }
-    .minus { background:#fca5a5; color:#450a0a; }
-    .qty { min-width:34px; text-align:center; font-size:28px; font-weight:800; }
-    .box { background:var(--card2); border-radius:14px; padding:14px; }
-    .label { color:var(--muted); font-size:14px; margin-bottom:6px; }
-    .value { font-size:30px; font-weight:800; }
-    input { width:100%; padding:14px; border-radius:12px; border:1px solid var(--line); background:#0b1220; color:white; font-size:22px; outline:none; }
-    .btn { width:100%; padding:15px; border:none; border-radius:14px; cursor:pointer; font-size:21px; font-weight:800; margin-top:12px; touch-action:manipulation; }
-    .btn-main { background:var(--yellow); color:#1f1300; }
-    .btn-main:disabled { opacity:.45; cursor:not-allowed; }
-    .btn-danger { background:var(--red); color:white; }
-    .status { text-align:center; min-height:18px; margin-top:10px; font-size:14px; color:#93c5fd; }
-    .stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
-    .stat { background:var(--card2); border-radius:12px; padding:12px; text-align:center; }
-    .stat .n { font-size:24px; font-weight:800; }
-    .small { color:var(--muted); font-size:13px; line-height:1.45; }
-    .sale-row { background:var(--card2); border-radius:12px; padding:10px; margin-bottom:8px; font-size:14px; }
-    .sale-top { display:flex; justify-content:space-between; gap:10px; font-weight:700; margin-bottom:4px; }
-    @media (max-width:640px) { .title{font-size:28px;} .product-name{font-size:20px;} }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EFM 26</title>
+
+<style>
+body{
+font-family:Arial;
+background:#111;
+color:white;
+max-width:600px;
+margin:auto;
+padding:20px;
+}
+
+h1{
+text-align:center;
+}
+
+.prodotto{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px;
+border-bottom:1px solid #333;
+font-size:20px;
+}
+
+button{
+font-size:22px;
+padding:10px;
+width:45px;
+}
+
+.qty{
+font-size:22px;
+margin:0 10px;
+min-width:25px;
+text-align:center;
+}
+
+.box{
+margin-top:20px;
+padding:15px;
+background:#222;
+border-radius:10px;
+}
+
+input{
+font-size:22px;
+padding:10px;
+width:100%;
+margin-top:10px;
+}
+
+.big{
+font-size:26px;
+font-weight:bold;
+margin-top:10px;
+}
+
+.conferma{
+margin-top:20px;
+width:100%;
+padding:15px;
+font-size:22px;
+background:orange;
+border:none;
+}
+
+.reset{
+margin-top:10px;
+width:100%;
+padding:15px;
+font-size:20px;
+background:red;
+border:none;
+color:white;
+}
+</style>
+
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="title">EFM 26</div>
 
-    <div class="card">
-      <div class="section-title">Cassiere</div>
-      <input type="text" id="cashierName" placeholder="Nome cassiere" maxlength="30">
-      <p class="small" style="margin-top:10px;">Il nome viene salvato insieme a ogni vendita.</p>
-    </div>
+<h1>EFM 26</h1>
 
-    <div class="card">
-      <div class="section-title">Selezione bibite</div>
+<div class="prodotto">
+Birra 6€
+<div>
+<button onclick="cambia('birra',-1)">-</button>
+<span class="qty" id="q_birra">0</span>
+<button onclick="cambia('birra',1)">+</button>
+</div>
+</div>
 
-      <div class="product"><div><div class="product-name">Birra</div><span class="price">€ 6,00</span></div><div class="qty-box"><button type="button" class="qty-btn minus" id="minus-birra">−</button><div class="qty" id="qty-birra">0</div><button type="button" class="qty-btn plus" id="plus-birra">+</button></div></div>
-      <div class="product"><div><div class="product-name">Spritz</div><span class="price">€ 6,00</span></div><div class="qty-box"><button type="button" class="qty-btn minus" id="minus-spritz">−</button><div class="qty" id="qty-spritz">0</div><button type="button" class="qty-btn plus" id="plus-spritz">+</button></div></div>
-      <div class="product"><div><div class="product-name">Gin Tonic</div><span class="price">€ 10,00</span></div><div class="qty-box"><button type="button" class="qty-btn minus" id="minus-gin">−</button><div class="qty" id="qty-gin">0</div><button type="button" class="qty-btn plus" id="plus-gin">+</button></div></div>
-      <div class="product"><div><div class="product-name">Acqua</div><span class="price">€ 2,50</span></div><div class="qty-box"><button type="button" class="qty-btn minus" id="minus-acqua">−</button><div class="qty" id="qty-acqua">0</div><button type="button" class="qty-btn plus" id="plus-acqua">+</button></div></div>
-    </div>
+<div class="prodotto">
+Spritz 6€
+<div>
+<button onclick="cambia('spritz',-1)">-</button>
+<span class="qty" id="q_spritz">0</span>
+<button onclick="cambia('spritz',1)">+</button>
+</div>
+</div>
 
-    <div class="card">
-      <div class="box"><div class="label">Totale cliente</div><div class="value" id="saleTotal">€ 0,00</div></div>
-      <div style="margin-top:12px;"><div class="label">Importo dato dal cliente</div><input type="number" id="paidInput" min="0" step="0.01" placeholder="Es. 20"></div>
-      <div class="box" style="margin-top:12px;"><div class="label">Resto da dare</div><div class="value" id="changeValue">€ 0,00</div></div>
-      <button class="btn btn-main" id="confirmBtn">Conferma vendita</button>
-      <button class="btn btn-danger" id="clearBtn">Azzera ordine corrente</button>
-      <div class="status" id="status"></div>
-    </div>
+<div class="prodotto">
+Gin tonic 10€
+<div>
+<button onclick="cambia('gin',-1)">-</button>
+<span class="qty" id="q_gin">0</span>
+<button onclick="cambia('gin',1)">+</button>
+</div>
+</div>
 
-    <div class="card">
-      <div class="section-title">Statistiche live</div>
-      <div class="stats-grid">
-        <div class="stat"><div class="label">Birre</div><div class="n" id="live-birra">0</div></div>
-        <div class="stat"><div class="label">Spritz</div><div class="n" id="live-spritz">0</div></div>
-        <div class="stat"><div class="label">Gin tonic</div><div class="n" id="live-gin">0</div></div>
-        <div class="stat"><div class="label">Acque</div><div class="n" id="live-acqua">0</div></div>
-      </div>
-      <div class="box" style="margin-top:12px;text-align:center;"><div class="label">Incasso totale</div><div class="value" id="live-total">€ 0,00</div></div>
-      <p class="small" id="syncInfo" style="margin-top:10px;">Connessione online in avvio...</p>
-    </div>
+<div class="prodotto">
+Acqua 2.5€
+<div>
+<button onclick="cambia('acqua',-1)">-</button>
+<span class="qty" id="q_acqua">0</span>
+<button onclick="cambia('acqua',1)">+</button>
+</div>
+</div>
 
-    <div class="card">
-      <div class="section-title">Ultime vendite</div>
-      <div id="salesList" class="small">Nessuna vendita registrata.</div>
-      <button class="btn btn-main" id="exportBtn">Esporta CSV vendite</button>
-      <button class="btn btn-danger" id="resetTotalsBtn">Reset incassi serata</button>
-    </div>
-  </div>
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script>
-    (function () {
-      var firebaseConfig = {
-        apiKey: 'AIzaSyDAtBACOSyWpMla4yAA9_bQ5oxY3NRIibg',
-        authDomain: 'efm-26-cassa.firebaseapp.com',
-        projectId: 'efm-26-cassa',
-        storageBucket: 'efm-26-cassa.firebasestorage.app',
-        messagingSenderId: '472657128260',
-        appId: '1:472657128260:web:a4646ffebe71c03fad0511'
-      };
+<div class="box">
+Totale cliente
+<div class="big" id="totale">0 €</div>
 
-      var state = {
-        cashier: localStorage.getItem('efm26_cashier') || '',
-        paid: 0,
-        items: { birra: 0, spritz: 0, gin: 0, acqua: 0 },
-        live: { birra: 0, spritz: 0, gin: 0, acqua: 0, totalCash: 0 },
-        sales: []
-      };
+Importo dato
+<input id="dato" type="number" oninput="calcolaResto()">
 
-      var prices = { birra: 6, spritz: 6, gin: 10, acqua: 2.5 };
-      var labels = { birra: 'Birra', spritz: 'Spritz', gin: 'Gin Tonic', acqua: 'Acqua' };
-      var db = null, statsRef = null, salesRef = null;
+Resto
+<div class="big" id="resto">0 €</div>
+</div>
 
-      var cashierInput = document.getElementById('cashierName');
-      var paidInput = document.getElementById('paidInput');
-      var confirmBtn = document.getElementById('confirmBtn');
-      var clearBtn = document.getElementById('clearBtn');
-      var exportBtn = document.getElementById('exportBtn');
-      var resetTotalsBtn = document.getElementById('resetTotalsBtn');
-      var statusEl = document.getElementById('status');
-      var salesListEl = document.getElementById('salesList');
-      var syncInfoEl = document.getElementById('syncInfo');
+<button class="conferma" onclick="conferma()">Conferma vendita</button>
+<button class="reset" onclick="reset()">Azzera</button>
 
-      function euro(v) { return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(v || 0); }
-      function totalSale() { return (state.items.birra * 6) + (state.items.spritz * 6) + (state.items.gin * 10) + (state.items.acqua * 2.5); }
 
-      function renderSales() {
-        if (!state.sales.length) { salesListEl.innerHTML = 'Nessuna vendita registrata.'; return; }
-        salesListEl.innerHTML = state.sales.slice(0, 20).map(function (sale) {
-          var itemsText = Object.keys(sale.items || {}).filter(function (k) { return (sale.items[k] || 0) > 0; }).map(function (k) { return labels[k] + ' x' + sale.items[k]; }).join(', ');
-          return '<div class="sale-row"><div class="sale-top"><span>' + (sale.cashier || 'Cassiere') + '</span><span>' + euro(sale.total) + '</span></div><div>' + itemsText + '</div><div style="margin-top:4px;">Pagato: ' + euro(sale.paid) + ' · Resto: ' + euro(sale.change) + (sale.time ? ' · ' + sale.time : '') + '</div></div>';
-        }).join('');
-      }
+<script>
 
-      function updateUI() {
-        cashierInput.value = state.cashier;
-        document.getElementById('qty-birra').textContent = state.items.birra;
-        document.getElementById('qty-spritz').textContent = state.items.spritz;
-        document.getElementById('qty-gin').textContent = state.items.gin;
-        document.getElementById('qty-acqua').textContent = state.items.acqua;
-        document.getElementById('saleTotal').textContent = euro(totalSale());
-        document.getElementById('live-birra').textContent = state.live.birra || 0;
-        document.getElementById('live-spritz').textContent = state.live.spritz || 0;
-        document.getElementById('live-gin').textContent = state.live.gin || 0;
-        document.getElementById('live-acqua').textContent = state.live.acqua || 0;
-        document.getElementById('live-total').textContent = euro(state.live.totalCash || 0);
-        document.getElementById('changeValue').textContent = euro(Math.max(0, (Number(state.paid) || 0) - totalSale()));
+prezzi={
+birra:6,
+spritz:6,
+gin:10,
+acqua:2.5
+}
 
-        var paid = Number(state.paid) || 0;
-        var total = totalSale();
-        var canConfirm = !!state.cashier.trim() && total > 0 && paid >= total;
-        confirmBtn.disabled = !canConfirm;
+q={
+birra:0,
+spritz:0,
+gin:0,
+acqua:0
+}
 
-        if (!state.cashier.trim()) statusEl.textContent = 'Inserisci il nome del cassiere.';
-        else if (total > 0 && paid < total) statusEl.textContent = 'Importo insufficiente: manca ' + euro(total - paid);
-        else statusEl.textContent = '';
+function cambia(nome,val){
+q[nome]+=val
 
-        renderSales();
-      }
+if(q[nome]<0)
+q[nome]=0
 
-      function changeQty(key, delta) { state.items[key] = Math.max(0, state.items[key] + delta); updateUI(); }
-      function resetCurrentSale() { state.items = { birra: 0, spritz: 0, gin: 0, acqua: 0 }; state.paid = 0; paidInput.value = ''; updateUI(); }
+document.getElementById("q_"+nome).innerHTML=q[nome]
 
-      function bindButtons() {
-        document.getElementById('minus-birra').onclick = function () { changeQty('birra', -1); };
-        document.getElementById('plus-birra').onclick = function () { changeQty('birra', 1); };
-        document.getElementById('minus-spritz').onclick = function () { changeQty('spritz', -1); };
-        document.getElementById('plus-spritz').onclick = function () { changeQty('spritz', 1); };
-        document.getElementById('minus-gin').onclick = function () { changeQty('gin', -1); };
-        document.getElementById('plus-gin').onclick = function () { changeQty('gin', 1); };
-        document.getElementById('minus-acqua').onclick = function () { changeQty('acqua', -1); };
-        document.getElementById('plus-acqua').onclick = function () { changeQty('acqua', 1); };
-      }
+calcolaTotale()
+}
 
-      function initOnline() {
-        try {
-          firebase.initializeApp(firebaseConfig);
-          db = firebase.firestore();
-          statsRef = db.collection('efm26').doc('stats');
-          salesRef = db.collection('efm26_sales');
+function calcolaTotale(){
 
-          statsRef.set({ birra: 0, spritz: 0, gin: 0, acqua: 0, totalCash: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true })
-          .then(function () {
-            syncInfoEl.textContent = 'Sincronizzazione online attiva.';
-          })
-          .catch(function (err) {
-            console.error(err);
-            syncInfoEl.textContent = 'Errore accesso Firestore. Controlla le regole.';
-          });
+tot=
+q.birra*6+
+q.spritz*6+
+q.gin*10+
+q.acqua*2.5
 
-          statsRef.onSnapshot(function (snap) {
-            if (!snap.exists) return;
-            var d = snap.data() || {};
-            state.live = { birra: d.birra || 0, spritz: d.spritz || 0, gin: d.gin || 0, acqua: d.acqua || 0, totalCash: d.totalCash || 0 };
-            updateUI();
-          }, function (err) {
-            console.error(err);
-            syncInfoEl.textContent = 'Errore lettura statistiche online.';
-          });
+document.getElementById("totale").innerHTML=tot+" €"
 
-          salesRef.orderBy('createdAt', 'desc').limit(20).onSnapshot(function (snap) {
-            state.sales = snap.docs.map(function (doc) {
-              var data = doc.data() || {};
-              var time = data.time || '';
-              if (data.createdAt && data.createdAt.toDate) time = data.createdAt.toDate().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-              data.time = time;
-              return data;
-            });
-            updateUI();
-          }, function (err) {
-            console.error(err);
-            syncInfoEl.textContent = 'Errore lettura vendite online.';
-          });
-        } catch (err) {
-          console.error(err);
-          syncInfoEl.textContent = 'Errore avvio Firebase.';
-        }
-      }
+calcolaResto()
+}
 
-      cashierInput.oninput = function () { state.cashier = cashierInput.value; localStorage.setItem('efm26_cashier', state.cashier); updateUI(); };
-      paidInput.oninput = function () { state.paid = Number(paidInput.value) || 0; updateUI(); };
-      clearBtn.onclick = function () { resetCurrentSale(); statusEl.textContent = 'Ordine corrente azzerato.'; };
+function calcolaResto(){
 
-      confirmBtn.onclick = function () {
-        if (!statsRef || !salesRef) { statusEl.textContent = 'Online non attivo.'; return; }
-        var total = totalSale();
-        var paid = Number(state.paid) || 0;
-        var change = Math.max(0, paid - total);
-        var items = { birra: state.items.birra, spritz: state.items.spritz, gin: state.items.gin, acqua: state.items.acqua };
+dato=document.getElementById("dato").value
 
-        statusEl.textContent = 'Salvataggio in corso...';
-        statsRef.update({
-          birra: firebase.firestore.FieldValue.increment(items.birra),
-          spritz: firebase.firestore.FieldValue.increment(items.spritz),
-          gin: firebase.firestore.FieldValue.increment(items.gin),
-          acqua: firebase.firestore.FieldValue.increment(items.acqua),
-          totalCash: firebase.firestore.FieldValue.increment(total)
-        }).then(function () {
-          return salesRef.add({
-            cashier: state.cashier.trim(),
-            items: items,
-            total: total,
-            paid: paid,
-            change: change,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            time: new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
-          });
-        }).then(function () {
-          resetCurrentSale();
-          statusEl.textContent = 'Vendita registrata online.';
-        }).catch(function (err) {
-          console.error(err);
-          statusEl.textContent = 'Errore di salvataggio online.';
-        });
-      };
+if(dato=="")
+dato=0
 
-      resetTotalsBtn.onclick = function () {
-        if (!statsRef) { statusEl.textContent = 'Online non attivo.'; return; }
-        var password = prompt('Inserisci la password di reset');
-        if (password !== 'EFM26RESET') { statusEl.textContent = 'Password errata.'; return; }
-        statsRef.set({ birra: 0, spritz: 0, gin: 0, acqua: 0, totalCash: 0, resetAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true })
-        .then(function () { statusEl.textContent = 'Incassi azzerati.'; })
-        .catch(function (err) { console.error(err); statusEl.textContent = 'Errore durante reset.'; });
-      };
+resto=dato-calcolaTotaleReturn()
 
-      exportBtn.onclick = function () {
-        var rows = [['ora','cassiere','birra','spritz','gin_tonic','acqua','totale','pagato','resto']];
-        state.sales.forEach(function (s) {
-          rows.push([s.time || '', s.cashier || '', (s.items && s.items.birra) || 0, (s.items && s.items.spritz) || 0, (s.items && s.items.gin) || 0, (s.items && s.items.acqua) || 0, s.total || 0, s.paid || 0, s.change || 0]);
-        });
-        var csv = rows.map(function (r) { return r.map(function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(';'); }).join('
-');
-        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a'); a.href = url; a.download = 'efm26_vendite.csv'; a.click(); URL.revokeObjectURL(url);
-        statusEl.textContent = 'CSV esportato.';
-      };
+if(resto<0)
+resto=0
 
-      bindButtons();
-      updateUI();
-      initOnline();
-    })();
-  </script>
+document.getElementById("resto").innerHTML=resto+" €"
+}
+
+function calcolaTotaleReturn(){
+return(
+q.birra*6+
+q.spritz*6+
+q.gin*10+
+q.acqua*2.5
+)
+}
+
+function conferma(){
+
+alert("Vendita registrata")
+
+reset()
+
+}
+
+function reset(){
+
+q={
+birra:0,
+spritz:0,
+gin:0,
+acqua:0
+}
+
+document.getElementById("dato").value=""
+
+for(i in q){
+document.getElementById("q_"+i).innerHTML=0
+}
+
+calcolaTotale()
+
+}
+
+</script>
+
 </body>
 </html>
