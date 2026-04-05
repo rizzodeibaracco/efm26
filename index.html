@@ -8,210 +8,133 @@
     :root {
       --bg: #0f172a;
       --card: #111827;
-      --card-2: #1f2937;
-      --text: #f9fafb;
+      --card2: #1f2937;
+      --text: #f8fafc;
       --muted: #cbd5e1;
-      --accent: #22c55e;
-      --accent-2: #f59e0b;
-      --danger: #ef4444;
-      --border: #334155;
+      --line: #334155;
+      --green: #22c55e;
+      --red: #ef4444;
+      --yellow: #f59e0b;
     }
-
     * { box-sizing: border-box; }
-
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(180deg, #0f172a 0%, #111827 100%);
+      background: linear-gradient(180deg, #0f172a, #111827);
       color: var(--text);
       min-height: 100vh;
     }
-
     .wrap {
-      max-width: 780px;
+      max-width: 820px;
       margin: 0 auto;
-      padding: 16px;
+      padding: 14px;
     }
-
     .title {
       text-align: center;
-      font-size: 32px;
+      font-size: 34px;
       font-weight: 800;
-      margin: 8px 0 18px;
-      letter-spacing: 1px;
+      margin: 10px 0 16px;
       color: #fde68a;
     }
-
     .card {
-      background: rgba(17, 24, 39, 0.95);
-      border: 1px solid var(--border);
+      background: rgba(17,24,39,.96);
+      border: 1px solid var(--line);
       border-radius: 18px;
       padding: 14px;
       margin-bottom: 14px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
     }
-
+    .section-title {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
     .product {
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 12px;
       align-items: center;
       padding: 12px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
-
     .product:last-child { border-bottom: 0; }
-
-    .product-name {
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    .price {
-      display: block;
-      font-size: 16px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    .qty-box {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    button {
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 22px;
-      font-weight: 700;
-    }
-
+    .product-name { font-size: 22px; font-weight: 700; }
+    .price { color: var(--muted); font-size: 16px; margin-top: 4px; display: block; }
+    .qty-box { display: flex; align-items: center; gap: 10px; }
     .qty-btn {
       width: 52px;
       height: 52px;
-      background: var(--accent);
-      color: #052e16;
-    }
-
-    .qty-btn.minus {
-      background: #fca5a5;
-      color: #450a0a;
-    }
-
-    .qty {
-      min-width: 34px;
-      text-align: center;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
       font-size: 26px;
       font-weight: 800;
     }
-
+    .plus { background: var(--green); color: #052e16; }
+    .minus { background: #fca5a5; color: #450a0a; }
+    .qty { min-width: 34px; text-align: center; font-size: 28px; font-weight: 800; }
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
-
-    .summary-line {
-      background: var(--card-2);
+    .box {
+      background: var(--card2);
       border-radius: 14px;
       padding: 14px;
     }
-
-    .summary-label {
-      color: var(--muted);
-      font-size: 15px;
-      margin-bottom: 8px;
-    }
-
-    .summary-value {
-      font-size: 30px;
-      font-weight: 800;
-    }
-
+    .label { color: var(--muted); font-size: 14px; margin-bottom: 6px; }
+    .value { font-size: 30px; font-weight: 800; }
     input {
       width: 100%;
       padding: 14px;
       border-radius: 12px;
-      border: 1px solid var(--border);
+      border: 1px solid var(--line);
       background: #0b1220;
       color: white;
       font-size: 22px;
       outline: none;
     }
-
-    .main-btn {
+    .btn {
       width: 100%;
-      padding: 16px;
-      background: var(--accent-2);
-      color: #1f1300;
-      font-size: 22px;
+      padding: 15px;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      font-size: 21px;
       font-weight: 800;
-      margin-top: 14px;
-      border-radius: 14px;
+      margin-top: 12px;
     }
-
-    .main-btn:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-
-    .danger-btn {
-      width: 100%;
-      padding: 12px;
-      background: var(--danger);
-      color: white;
-      font-size: 18px;
+    .btn-main { background: var(--yellow); color: #1f1300; }
+    .btn-main:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-danger { background: var(--red); color: white; }
+    .status {
+      text-align: center;
+      min-height: 18px;
       margin-top: 10px;
-      border-radius: 14px;
+      font-size: 14px;
+      color: #93c5fd;
     }
-
-    .live-grid {
+    .stats-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
     }
-
     .stat {
-      background: var(--card-2);
-      border-radius: 14px;
+      background: var(--card2);
+      border-radius: 12px;
       padding: 12px;
       text-align: center;
     }
-
-    .stat-label {
-      font-size: 14px;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-
-    .stat-value {
-      font-size: 24px;
-      font-weight: 800;
-    }
-
-    .status {
-      font-size: 14px;
-      color: #93c5fd;
-      margin-top: 8px;
-      text-align: center;
-      min-height: 18px;
-    }
-
-    .small {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.45;
-    }
-
+    .stat .n { font-size: 24px; font-weight: 800; }
+    .small { color: var(--muted); font-size: 13px; line-height: 1.45; }
     .sale-row {
-      background: var(--card-2);
+      background: var(--card2);
       border-radius: 12px;
       padding: 10px;
       margin-bottom: 8px;
+      font-size: 14px;
     }
-
     .sale-top {
       display: flex;
       justify-content: space-between;
@@ -219,13 +142,10 @@
       font-weight: 700;
       margin-bottom: 4px;
     }
-
     @media (max-width: 640px) {
       .title { font-size: 28px; }
       .product-name { font-size: 20px; }
-      .summary-value { font-size: 26px; }
       .grid-2 { grid-template-columns: 1fr; }
-      .live-grid { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
@@ -233,67 +153,57 @@
   <div class="wrap">
     <div class="title">EFM 26</div>
 
-    <div class="card" id="products"></div>
+    <div class="card">
+      <div class="section-title">Cassiere</div>
+      <input type="text" id="cashierName" placeholder="Nome cassiere" maxlength="30" />
+      <p class="small" style="margin-top:10px;">Il nome viene salvato insieme a ogni vendita.</p>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Selezione bibite</div>
+      <div id="products"></div>
+    </div>
 
     <div class="card">
       <div class="grid-2">
-        <div class="summary-line">
-          <div class="summary-label">Totale cliente</div>
-          <div class="summary-value" id="saleTotal">€ 0,00</div>
+        <div class="box">
+          <div class="label">Totale cliente</div>
+          <div class="value" id="saleTotal">€ 0,00</div>
         </div>
-        <div class="summary-line">
-          <div class="summary-label">Resto da dare</div>
-          <div class="summary-value" id="changeValue">€ 0,00</div>
+        <div class="box">
+          <div class="label">Resto da dare</div>
+          <div class="value" id="changeValue">€ 0,00</div>
         </div>
       </div>
-
       <div style="margin-top:12px;">
-        <div class="summary-label">Importo dato dal cliente</div>
+        <div class="label">Importo dato dal cliente</div>
         <input type="number" id="paidInput" min="0" step="0.01" placeholder="Es. 20" />
       </div>
-
-      <button class="main-btn" id="confirmBtn">Conferma vendita</button>
-      <button class="danger-btn" id="clearBtn">Azzera ordine corrente</button>
+      <button class="btn btn-main" id="confirmBtn">Conferma vendita</button>
+      <button class="btn btn-danger" id="clearBtn">Azzera ordine corrente</button>
       <div class="status" id="status"></div>
     </div>
 
     <div class="card">
-      <div style="font-size:18px;font-weight:800;margin-bottom:8px;">Cassiere</div>
-      <input type="text" id="cashierName" placeholder="Nome cassiere" maxlength="30" />
-      <p class="small" style="margin-top:10px;">Il nome del cassiere viene salvato insieme ad ogni vendita.</p>
+      <div class="section-title">Statistiche live</div>
+      <div class="stats-grid">
+        <div class="stat"><div class="label">Birre</div><div class="n" id="live-birra">0</div></div>
+        <div class="stat"><div class="label">Spritz</div><div class="n" id="live-spritz">0</div></div>
+        <div class="stat"><div class="label">Gin tonic</div><div class="n" id="live-gin">0</div></div>
+        <div class="stat"><div class="label">Acque</div><div class="n" id="live-acqua">0</div></div>
+      </div>
+      <div class="box" style="margin-top:12px;text-align:center;">
+        <div class="label">Incasso totale live</div>
+        <div class="value" id="live-total">€ 0,00</div>
+      </div>
     </div>
 
     <div class="card">
-      <div style="font-size:22px;font-weight:800;margin-bottom:12px;">Statistiche live</div>
-      <div class="live-grid">
-        <div class="stat"><div class="stat-label">Birre</div><div class="stat-value" id="live-birra">0</div></div>
-        <div class="stat"><div class="stat-label">Spritz</div><div class="stat-value" id="live-spritz">0</div></div>
-        <div class="stat"><div class="stat-label">Gin tonic</div><div class="stat-value" id="live-gin">0</div></div>
-        <div class="stat"><div class="stat-label">Acque</div><div class="stat-value" id="live-acqua">0</div></div>
-      </div>
-      <div class="summary-line" style="margin-top:12px; text-align:center;">
-        <div class="summary-label">Incasso totale live</div>
-        <div class="summary-value" id="live-total">€ 0,00</div>
-      </div>
-      <p class="small" style="margin-top:12px;">
-        Questa sezione si aggiorna online per tutti i 5-6 cassieri contemporaneamente.
-      </p>
-    </div>
-
-    <div class="card">
-      <div style="font-size:22px;font-weight:800;margin-bottom:12px;">Ultime vendite</div>
+      <div class="section-title">Ultime vendite</div>
       <div id="salesList" class="small">Nessuna vendita registrata.</div>
-      <button class="main-btn" id="exportBtn" style="margin-top:12px;">Esporta CSV vendite</button>
-      <button class="danger-btn" id="resetTotalsBtn">Reset incassi serata</button>
-      <p class="small" style="margin-top:10px;">Il reset richiede password, così non viene fatto per sbaglio.</p>
-    </div>
-
-    <div class="card">
-      <div style="font-size:18px;font-weight:800;margin-bottom:8px;">Configurazione online</div>
-      <p class="small">
-        Per farlo funzionare davvero online su più telefoni, devi creare un progetto Firebase e incollare qui sotto i tuoi dati di configurazione.
-        Dopo puoi pubblicare questo file su GitHub Pages o Firebase Hosting.
-      </p>
+      <button class="btn btn-main" id="exportBtn">Esporta CSV vendite</button>
+      <button class="btn btn-danger" id="resetTotalsBtn">Reset incassi serata</button>
+      <p class="small" style="margin-top:10px;">Password reset attuale: EFM26RESET</p>
     </div>
   </div>
 
@@ -306,20 +216,15 @@
       updateDoc,
       increment,
       onSnapshot,
-      runTransaction,
       collection,
       addDoc,
       serverTimestamp,
       query,
       orderBy,
       limit,
-      onSnapshot as onSnapshotCollection,
       getDocs
     } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-    // =========================
-    // INSERISCI QUI I TUOI DATI FIREBASE
-    // =========================
     const firebaseConfig = {
       apiKey: "AIzaSyDAtBACOSyWpMla4yAA9_bQ5oxY3NRIibg",
       authDomain: "efm-26-cassa.firebaseapp.com",
@@ -328,8 +233,6 @@
       messagingSenderId: "472657128260",
       appId: "1:472657128260:web:a4646ffebe71c03fad0511"
     };
-
-    const hasFirebaseConfig = !Object.values(firebaseConfig).some(v => String(v).startsWith('INSERISCI_'));
 
     const products = [
       { key: 'birra', name: 'Birra', price: 6 },
@@ -346,6 +249,10 @@
       recentSales: []
     };
 
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const statsRef = doc(db, 'efm26', 'stats');
+
     const productsEl = document.getElementById('products');
     const saleTotalEl = document.getElementById('saleTotal');
     const changeValueEl = document.getElementById('changeValue');
@@ -358,19 +265,16 @@
     const exportBtn = document.getElementById('exportBtn');
     const resetTotalsBtn = document.getElementById('resetTotalsBtn');
 
-    let db = null;
-    let statsRef = null;
-
     function euro(value) {
       return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(value || 0);
     }
 
-    function currentSaleTotal() {
-      return products.reduce((sum, p) => sum + (state.items[p.key] * p.price), 0);
+    function totalSale() {
+      return products.reduce((sum, p) => sum + state.items[p.key] * p.price, 0);
     }
 
-    function currentChange() {
-      return Math.max(0, (Number(state.paid) || 0) - currentSaleTotal());
+    function changeValue() {
+      return Math.max(0, (Number(state.paid) || 0) - totalSale());
     }
 
     function hasItems() {
@@ -386,8 +290,8 @@
           </div>
           <div class="qty-box">
             <button class="qty-btn minus" data-key="${p.key}" data-action="minus">−</button>
-            <div class="qty" id="qty-${p.key}">${state.items[p.key]}</div>
-            <button class="qty-btn" data-key="${p.key}" data-action="plus">+</button>
+            <div class="qty" id="qty-${p.key}">0</div>
+            <button class="qty-btn plus" data-key="${p.key}" data-action="plus">+</button>
           </div>
         </div>
       `).join('');
@@ -408,16 +312,15 @@
         salesList.innerHTML = 'Nessuna vendita registrata.';
         return;
       }
-
       salesList.innerHTML = state.recentSales.map(sale => {
         const itemsText = products
           .filter(p => (sale.items?.[p.key] || 0) > 0)
           .map(p => `${p.name} x${sale.items[p.key]}`)
           .join(', ');
-
-        const when = sale.createdAt?.toDate ? sale.createdAt.toDate() : null;
-        const timeText = when ? when.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }) : 'ora';
-
+        let timeText = '';
+        if (sale.createdAt && typeof sale.createdAt.toDate === 'function') {
+          timeText = sale.createdAt.toDate().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+        }
         return `
           <div class="sale-row">
             <div class="sale-top">
@@ -425,39 +328,36 @@
               <span>${euro(sale.total || 0)}</span>
             </div>
             <div>${itemsText || 'Nessun articolo'}</div>
-            <div style="margin-top:4px;">Pagato: ${euro(sale.paid || 0)} · Resto: ${euro(sale.change || 0)} · ${timeText}</div>
+            <div style="margin-top:4px;">Pagato: ${euro(sale.paid || 0)} · Resto: ${euro(sale.change || 0)} ${timeText ? '· ' + timeText : ''}</div>
           </div>
         `;
       }).join('');
     }
 
     function updateUI() {
-      for (const p of products) {
-        document.getElementById(`qty-${p.key}`).textContent = state.items[p.key];
-      }
+      products.forEach(p => {
+        const el = document.getElementById(`qty-${p.key}`);
+        if (el) el.textContent = state.items[p.key];
+      });
 
-      const total = currentSaleTotal();
-      const paid = Number(state.paid) || 0;
-      saleTotalEl.textContent = euro(total);
-      changeValueEl.textContent = euro(currentChange());
-
-      const canConfirm = hasItems() && paid >= total && total > 0 && hasFirebaseConfig && state.cashier.trim().length > 0;
-      confirmBtn.disabled = !canConfirm;
-
+      saleTotalEl.textContent = euro(totalSale());
+      changeValueEl.textContent = euro(changeValue());
+      cashierNameInput.value = state.cashier;
       document.getElementById('live-birra').textContent = state.live.birra || 0;
       document.getElementById('live-spritz').textContent = state.live.spritz || 0;
       document.getElementById('live-gin').textContent = state.live.gin || 0;
       document.getElementById('live-acqua').textContent = state.live.acqua || 0;
       document.getElementById('live-total').textContent = euro(state.live.totalCash || 0);
-      cashierNameInput.value = state.cashier;
       renderRecentSales();
 
-      if (!hasFirebaseConfig) {
-        statusEl.textContent = 'Inserisci la configurazione Firebase per usare la sincronizzazione online.';
-      } else if (!state.cashier.trim()) {
+      const total = totalSale();
+      const paid = Number(state.paid) || 0;
+      confirmBtn.disabled = !(hasItems() && total > 0 && paid >= total && state.cashier.trim());
+
+      if (!state.cashier.trim()) {
         statusEl.textContent = 'Inserisci il nome del cassiere.';
       } else if (hasItems() && paid < total) {
-        statusEl.textContent = 'Importo insufficiente: manca ancora ' + euro(total - paid);
+        statusEl.textContent = 'Importo insufficiente: manca ' + euro(total - paid);
       } else {
         statusEl.textContent = '';
       }
@@ -470,16 +370,7 @@
       updateUI();
     }
 
-    async function initFirebase() {
-      if (!hasFirebaseConfig) {
-        updateUI();
-        return;
-      }
-
-      const app = initializeApp(firebaseConfig);
-      db = getFirestore(app);
-      statsRef = doc(db, 'efm26', 'stats');
-
+    async function initDb() {
       await setDoc(statsRef, {
         birra: 0,
         spritz: 0,
@@ -489,48 +380,43 @@
         createdAt: serverTimestamp()
       }, { merge: true });
 
-      onSnapshot(statsRef, (snap) => {
+      onSnapshot(statsRef, snap => {
         if (snap.exists()) {
-          const data = snap.data();
+          const d = snap.data();
           state.live = {
-            birra: data.birra || 0,
-            spritz: data.spritz || 0,
-            gin: data.gin || 0,
-            acqua: data.acqua || 0,
-            totalCash: data.totalCash || 0
+            birra: d.birra || 0,
+            spritz: d.spritz || 0,
+            gin: d.gin || 0,
+            acqua: d.acqua || 0,
+            totalCash: d.totalCash || 0
           };
           updateUI();
         }
       });
 
-      const q = query(collection(db, 'efm26_sales'), orderBy('createdAt', 'desc'), limit(20));
-      onSnapshotCollection(q, (snap) => {
-        state.recentSales = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const qSales = query(collection(db, 'efm26_sales'), orderBy('createdAt', 'desc'), limit(20));
+      onSnapshot(qSales, snap => {
+        state.recentSales = snap.docs.map(x => ({ id: x.id, ...x.data() }));
         updateUI();
       });
     }
 
     async function saveSale() {
-      const total = currentSaleTotal();
+      const total = totalSale();
       const paid = Number(state.paid) || 0;
-      const change = currentChange();
-
-      if (!db || !statsRef) return;
-      if (!hasItems()) return;
-      if (paid < total) return;
+      const change = changeValue();
+      if (!hasItems() || paid < total || !state.cashier.trim()) return;
 
       confirmBtn.disabled = true;
       statusEl.textContent = 'Salvataggio in corso...';
 
       try {
-        await runTransaction(db, async () => {
-          await updateDoc(statsRef, {
-            birra: increment(state.items.birra),
-            spritz: increment(state.items.spritz),
-            gin: increment(state.items.gin),
-            acqua: increment(state.items.acqua),
-            totalCash: increment(total)
-          });
+        await updateDoc(statsRef, {
+          birra: increment(state.items.birra),
+          spritz: increment(state.items.spritz),
+          gin: increment(state.items.gin),
+          acqua: increment(state.items.acqua),
+          totalCash: increment(total)
         });
 
         await addDoc(collection(db, 'efm26_sales'), {
@@ -542,11 +428,11 @@
           createdAt: serverTimestamp()
         });
 
-        statusEl.textContent = 'Vendita registrata correttamente.';
+        statusEl.textContent = 'Vendita registrata.';
         resetCurrentSale();
       } catch (err) {
         console.error(err);
-        statusEl.textContent = 'Errore di salvataggio. Controlla Firebase.';
+        statusEl.textContent = 'Errore di salvataggio.';
       }
     }
 
@@ -563,31 +449,21 @@
 
     confirmBtn.addEventListener('click', saveSale);
 
+    clearBtn.addEventListener('click', () => {
+      resetCurrentSale();
+      statusEl.textContent = 'Ordine corrente azzerato.';
+    });
+
     exportBtn.addEventListener('click', async () => {
-      if (!db) {
-        statusEl.textContent = 'Firebase non configurato.';
-        return;
-      }
       try {
         const snap = await getDocs(query(collection(db, 'efm26_sales'), orderBy('createdAt', 'desc')));
         const rows = [['data','cassiere','birra','spritz','gin_tonic','acqua','totale','pagato','resto']];
         snap.forEach(docu => {
           const s = docu.data();
-          const d = s.createdAt?.toDate ? s.createdAt.toDate().toLocaleString('it-IT') : '';
-          rows.push([
-            d,
-            s.cashier || '',
-            s.items?.birra || 0,
-            s.items?.spritz || 0,
-            s.items?.gin || 0,
-            s.items?.acqua || 0,
-            s.total || 0,
-            s.paid || 0,
-            s.change || 0
-          ]);
+          const d = s.createdAt && typeof s.createdAt.toDate === 'function' ? s.createdAt.toDate().toLocaleString('it-IT') : '';
+          rows.push([d, s.cashier || '', s.items?.birra || 0, s.items?.spritz || 0, s.items?.gin || 0, s.items?.acqua || 0, s.total || 0, s.paid || 0, s.change || 0]);
         });
-        const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(';')).join('
-');
+        const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(';')).join('\n');
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -598,17 +474,16 @@
         statusEl.textContent = 'CSV esportato.';
       } catch (err) {
         console.error(err);
-        statusEl.textContent = 'Errore durante esportazione CSV.';
+        statusEl.textContent = 'Errore esportazione CSV.';
       }
     });
 
     resetTotalsBtn.addEventListener('click', async () => {
       const password = prompt('Inserisci la password di reset');
       if (password !== 'EFM26RESET') {
-        statusEl.textContent = 'Password reset errata.';
+        statusEl.textContent = 'Password errata.';
         return;
       }
-      if (!db || !statsRef) return;
       try {
         await setDoc(statsRef, {
           birra: 0,
@@ -618,21 +493,16 @@
           totalCash: 0,
           resetAt: serverTimestamp()
         }, { merge: true });
-        statusEl.textContent = 'Incassi serata azzerati.';
+        statusEl.textContent = 'Incassi live azzerati.';
       } catch (err) {
         console.error(err);
-        statusEl.textContent = 'Errore durante il reset.';
+        statusEl.textContent = 'Errore durante reset.';
       }
-    });
-
-    clearBtn.addEventListener('click', () => {
-      resetCurrentSale();
-      statusEl.textContent = 'Ordine corrente azzerato.';
     });
 
     renderProducts();
     updateUI();
-    initFirebase();
+    initDb();
   </script>
-  </body>
+</body>
 </html>
