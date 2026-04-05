@@ -150,9 +150,9 @@
           <span class="price">€ 6,00</span>
         </div>
         <div class="qty-box">
-          <button type="button" class="qty-btn minus" onclick="changeQty('birra',-1)">−</button>
+          <button type="button" class="qty-btn minus" id="minus-birra">−</button>
           <div class="qty" id="qty-birra">0</div>
-          <button type="button" class="qty-btn plus" onclick="changeQty('birra',1)">+</button>
+          <button type="button" class="qty-btn plus" id="plus-birra">+</button>
         </div>
       </div>
 
@@ -162,9 +162,9 @@
           <span class="price">€ 6,00</span>
         </div>
         <div class="qty-box">
-          <button type="button" class="qty-btn minus" onclick="changeQty('spritz',-1)">−</button>
+          <button type="button" class="qty-btn minus" id="minus-spritz">−</button>
           <div class="qty" id="qty-spritz">0</div>
-          <button type="button" class="qty-btn plus" onclick="changeQty('spritz',1)">+</button>
+          <button type="button" class="qty-btn plus" id="plus-spritz">+</button>
         </div>
       </div>
 
@@ -174,9 +174,9 @@
           <span class="price">€ 10,00</span>
         </div>
         <div class="qty-box">
-          <button type="button" class="qty-btn minus" onclick="changeQty('gin',-1)">−</button>
+          <button type="button" class="qty-btn minus" id="minus-gin">−</button>
           <div class="qty" id="qty-gin">0</div>
-          <button type="button" class="qty-btn plus" onclick="changeQty('gin',1)">+</button>
+          <button type="button" class="qty-btn plus" id="plus-gin">+</button>
         </div>
       </div>
 
@@ -186,9 +186,9 @@
           <span class="price">€ 2,50</span>
         </div>
         <div class="qty-box">
-          <button type="button" class="qty-btn minus" onclick="changeQty('acqua',-1)">−</button>
+          <button type="button" class="qty-btn minus" id="minus-acqua">−</button>
           <div class="qty" id="qty-acqua">0</div>
-          <button type="button" class="qty-btn plus" onclick="changeQty('acqua',1)">+</button>
+          <button type="button" class="qty-btn plus" id="plus-acqua">+</button>
         </div>
       </div>
     </div>
@@ -394,8 +394,16 @@
       document.getElementById('status').textContent = 'CSV esportato.';
     });
 
+    document.getElementById('minus-birra').addEventListener('click', function() { changeQty('birra', -1); });
+    document.getElementById('plus-birra').addEventListener('click', function() { changeQty('birra', 1); });
+    document.getElementById('minus-spritz').addEventListener('click', function() { changeQty('spritz', -1); });
+    document.getElementById('plus-spritz').addEventListener('click', function() { changeQty('spritz', 1); });
+    document.getElementById('minus-gin').addEventListener('click', function() { changeQty('gin', -1); });
+    document.getElementById('plus-gin').addEventListener('click', function() { changeQty('gin', 1); });
+    document.getElementById('minus-acqua').addEventListener('click', function() { changeQty('acqua', -1); });
+    document.getElementById('plus-acqua').addEventListener('click', function() { changeQty('acqua', 1); });
+
     updateUI();
-    window.changeQty = changeQty;
   </script>
 </body>
 </html>
