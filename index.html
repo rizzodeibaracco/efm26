@@ -73,11 +73,6 @@
     .plus { background: var(--green); color: #052e16; }
     .minus { background: #fca5a5; color: #450a0a; }
     .qty { min-width: 34px; text-align: center; font-size: 28px; font-weight: 800; }
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
     .box {
       background: var(--card2);
       border-radius: 14px;
@@ -145,7 +140,6 @@
     @media (max-width: 640px) {
       .title { font-size: 28px; }
       .product-name { font-size: 20px; }
-      .grid-2 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -166,9 +160,9 @@
 
     <div class="card">
       <div class="box">
-          <div class="label">Totale cliente</div>
-          <div class="value" id="saleTotal">€ 0,00</div>
-        </div>
+        <div class="label">Totale cliente</div>
+        <div class="value" id="saleTotal">€ 0,00</div>
+      </div>
 
       <div style="margin-top:12px;">
         <div class="label">Importo dato dal cliente</div>
@@ -176,15 +170,10 @@
       </div>
 
       <div class="box" style="margin-top:12px;">
-          <div class="label">Resto da dare</div>
-          <div class="value" id="changeValue">€ 0,00</div>
-        </div>
-        </div>
+        <div class="label">Resto da dare</div>
+        <div class="value" id="changeValue">€ 0,00</div>
       </div>
-      <div style="margin-top:12px;">
-        <div class="label">Importo dato dal cliente</div>
-        <input type="number" id="paidInput" min="0" step="0.01" placeholder="Es. 20" />
-      </div>
+
       <button class="btn btn-main" id="confirmBtn">Conferma vendita</button>
       <button class="btn btn-danger" id="clearBtn">Azzera ordine corrente</button>
       <div class="status" id="status"></div>
@@ -279,7 +268,7 @@
       return products.reduce((sum, p) => sum + state.items[p.key] * p.price, 0);
     }
 
-    function changeValue() {
+    function changeValueCalc() {
       return Math.max(0, (Number(state.paid) || 0) - totalSale());
     }
 
@@ -296,7 +285,7 @@
           </div>
           <div class="qty-box">
             <button class="qty-btn minus" data-key="${p.key}" data-action="minus">−</button>
-            <div class="qty" id="qty-${p.key}">0</div>
+            <div class="qty" id="qty-${p.key}">${state.items[p.key]}</div>
             <button class="qty-btn plus" data-key="${p.key}" data-action="plus">+</button>
           </div>
         </div>
@@ -347,8 +336,7 @@
       });
 
       saleTotalEl.textContent = euro(totalSale());
-      changeValueEl.textContent = euro(changeValue());
-      cashierNameInput.value = state.cashier;
+      changeValueEl.textContent = euro(changeValueCalc());
       document.getElementById('live-birra').textContent = state.live.birra || 0;
       document.getElementById('live-spritz').textContent = state.live.spritz || 0;
       document.getElementById('live-gin').textContent = state.live.gin || 0;
@@ -410,7 +398,7 @@
     async function saveSale() {
       const total = totalSale();
       const paid = Number(state.paid) || 0;
-      const change = changeValue();
+      const change = changeValueCalc();
       if (!hasItems() || paid < total || !state.cashier.trim()) return;
 
       confirmBtn.disabled = true;
@@ -507,6 +495,7 @@
       }
     });
 
+    cashierNameInput.value = state.cashier;
     renderProducts();
     updateUI();
     initDb();
