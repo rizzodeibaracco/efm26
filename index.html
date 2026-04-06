@@ -41,27 +41,27 @@
     .small{color:var(--muted);font-size:13px;line-height:1.45}
     .sale-row{background:var(--card2);border-radius:12px;padding:10px;margin-bottom:8px;font-size:14px}
     .sale-top{display:flex;justify-content:space-between;gap:10px;font-weight:700;margin-bottom:4px}
+    .page{display:none}
+    .page.active{display:block}
     .sync-wrap{display:flex;align-items:center;gap:8px;margin-top:10px}
-    .dot{width:12px;height:12px;border-radius:50%;display:inline-block;flex:0 0 12px}
+    .sync-dot{width:12px;height:12px;border-radius:50%;display:inline-block;flex:0 0 12px}
     .dot-green{background:#22c55e}
     .dot-orange{background:#f59e0b}
     .dot-red{background:#ef4444}
-    .page{display:none}
-    .page.active{display:block}
-    .two-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .history-item{background:var(--card2);border-radius:10px;padding:10px;margin-bottom:8px}
+    .cash-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .emptying-row{background:var(--card2);border-radius:12px;padding:10px;margin-bottom:8px}
     @media (max-width:640px){
       .title{font-size:28px}
       .product-name{font-size:20px}
-      .two-cols{grid-template-columns:1fr}
+      .cash-grid{grid-template-columns:1fr}
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div id="mainPage" class="page active">
-      <div class="title">EFM 26</div>
+    <div class="title">EFM 26</div>
 
+    <div id="mainPage" class="page active">
       <div class="card">
         <div class="section-title">Cassiere</div>
         <input type="text" id="cashierName" placeholder="Nome cassiere" maxlength="30">
@@ -133,8 +133,8 @@
           <div class="value" id="changeValue">€ 0,00</div>
         </div>
 
-        <button class="btn btn-pos" id="posBtn">POS</button>
         <button class="btn btn-main" id="confirmBtn">Conferma vendita</button>
+        <button class="btn btn-pos" id="posBtn">POS</button>
         <button class="btn btn-danger" id="clearBtn">Azzera ordine corrente</button>
         <div class="status" id="status"></div>
       </div>
@@ -162,71 +162,67 @@
         <button class="btn btn-secondary" id="goCashMgmtBtn">Gestione cassa</button>
 
         <div class="sync-wrap">
-          <span class="dot dot-orange" id="syncDot"></span>
-          <p class="small" id="syncInfo" style="margin:0;">Sincronizzazione online in avvio...</p>
+          <span id="syncDot" class="sync-dot dot-orange"></span>
+          <span class="small" id="syncInfo">Sincronizzazione online in avvio...</span>
         </div>
       </div>
     </div>
 
     <div id="salesPage" class="page">
-      <div class="title">Ultime vendite</div>
-
       <div class="card">
-        <div class="section-title">Elenco vendite</div>
-        <button class="btn btn-secondary" id="backBtn">Torna alla cassa</button>
+        <div class="section-title">Ultime vendite</div>
+        <button class="btn btn-secondary" id="backFromSalesBtn">Torna alla cassa</button>
         <div id="salesList" class="small" style="margin-top:12px;">Nessuna vendita registrata.</div>
-        <button class="btn btn-main" id="exportBtn">Esporta Excel CSV</button>
+        <button class="btn btn-main" id="exportBtn">Esporta Excel vendite</button>
         <button class="btn btn-danger" id="resetTotalsBtn">Reset incassi serata</button>
         <p class="small" style="margin-top:10px;">Password reset: EFM26RESET</p>
       </div>
     </div>
 
     <div id="cashMgmtPage" class="page">
-      <div class="title">Gestione cassa</div>
-
       <div class="card">
-        <div class="section-title">Cassa del cassiere: <span id="cashierNameMgmt">-</span></div>
-
-        <div class="box" style="margin-bottom:12px;">
-          <div class="label">Totale incassato da questa cassa</div>
-          <div class="value" id="singleCashTotal">€ 0,00</div>
-        </div>
-
-        <div class="two-cols">
-          <div class="box">
-            <div class="label">POS</div>
-            <div class="value" id="singleCashPOS">€ 0,00</div>
-          </div>
-
-          <div class="box">
-            <div class="label">Contanti attuali in cassa</div>
-            <div class="value" id="singleCashCash">€ 0,00</div>
-          </div>
-        </div>
-
-        <div class="box" style="margin-top:12px;">
-          <div class="label">Svuotamento cassa</div>
-          <input type="number" id="cashWithdrawalInput" min="0" step="0.01" placeholder="Es. 100">
-          <button class="btn btn-main" id="saveWithdrawalBtn">Registra svuotamento</button>
-        </div>
-
-        <div class="box" style="margin-top:12px;">
-          <div class="label">Totale svuotato</div>
-          <div class="value" id="withdrawnTotal">€ 0,00</div>
-        </div>
-
-        <div class="card" style="margin-top:12px;padding:0;border:none;background:transparent;box-shadow:none;">
-          <div class="section-title">Storico svuotamenti</div>
-          <div id="withdrawalHistory" class="small">Nessuno svuotamento registrato.</div>
-        </div>
-
+        <div class="section-title">Gestione cassa</div>
         <button class="btn btn-secondary" id="backFromCashMgmtBtn">Torna alla cassa</button>
+        <p class="small" id="cashierLabel" style="margin-top:12px;">Cassiere: -</p>
+
+        <div class="box" style="margin-top:12px;text-align:center;">
+          <div class="label">Totale incassato da questa cassa</div>
+          <div class="value" id="single-total-all">€ 0,00</div>
+        </div>
+
+        <div class="cash-grid" style="margin-top:12px;">
+          <div class="box">
+            <div class="label">Incasso POS</div>
+            <div class="value" id="single-total-pos">€ 0,00</div>
+          </div>
+          <div class="box">
+            <div class="label">Incasso contanti</div>
+            <div class="value" id="single-total-cash">€ 0,00</div>
+          </div>
+        </div>
+
+        <div class="box" style="margin-top:12px;">
+          <div class="label">Contanti attualmente in cassa</div>
+          <div class="value" id="single-cash-left">€ 0,00</div>
+        </div>
+
+        <div class="card" style="margin-top:12px;">
+          <div class="section-title">Svuotamento cassa</div>
+          <input type="number" id="emptyingInput" min="0" step="0.01" placeholder="Importo prelevato dalla cassa">
+          <button class="btn btn-main" id="saveEmptyingBtn">Registra svuotamento cassa</button>
+        </div>
+
+        <div class="card" style="margin-top:12px;">
+          <div class="section-title">Storico svuotamenti</div>
+          <div id="emptyingsList" class="small">Nessuno svuotamento registrato.</div>
+        </div>
       </div>
     </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script>
     (function () {
       var firebaseConfig = {
@@ -244,6 +240,7 @@
         items: { birra: 0, spritz: 0, gin: 0, acqua: 0, coca: 0 },
         live: JSON.parse(localStorage.getItem("efm26_live_cache") || '{"birra":0,"spritz":0,"gin":0,"acqua":0,"coca":0,"totalCash":0,"totalPOS":0}'),
         sales: JSON.parse(localStorage.getItem("efm26_sales_cache") || "[]"),
+        pendingSales: JSON.parse(localStorage.getItem("efm26_pending_sales") || "[]"),
         onlineReady: false
       };
 
@@ -255,31 +252,38 @@
         return new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(v || 0);
       }
 
-      function saveCaches() {
+      function saveLocalCaches() {
         localStorage.setItem("efm26_cashier", state.cashier);
         localStorage.setItem("efm26_live_cache", JSON.stringify(state.live));
         localStorage.setItem("efm26_sales_cache", JSON.stringify(state.sales.slice(0, 200)));
+        localStorage.setItem("efm26_pending_sales", JSON.stringify(state.pendingSales));
       }
 
-      function getWithdrawalsKey() {
-        return "efm26_withdrawals_" + (state.cashier.trim() || "anon");
+      function getCashMgmtKey() {
+        var cashier = state.cashier.trim() || "cassa_senza_nome";
+        return "efm26_emptyings_" + cashier.toLowerCase();
       }
 
-      function getWithdrawals() {
-        return JSON.parse(localStorage.getItem(getWithdrawalsKey()) || "[]");
+      function getEmptyings() {
+        try {
+          return JSON.parse(localStorage.getItem(getCashMgmtKey()) || "[]");
+        } catch (e) {
+          return [];
+        }
       }
 
-      function saveWithdrawals(list) {
-        localStorage.setItem(getWithdrawalsKey(), JSON.stringify(list));
+      function saveEmptyings(list) {
+        localStorage.setItem(getCashMgmtKey(), JSON.stringify(list));
       }
 
-      function setSyncIndicator(type, text) {
+      function setSyncIndicator(status, text) {
         var dot = document.getElementById("syncDot");
-        dot.className = "dot";
-        if (type === "green") dot.classList.add("dot-green");
-        if (type === "orange") dot.classList.add("dot-orange");
-        if (type === "red") dot.classList.add("dot-red");
-        document.getElementById("syncInfo").textContent = text;
+        var info = document.getElementById("syncInfo");
+        dot.className = "sync-dot";
+        if (status === "green") dot.classList.add("dot-green");
+        else if (status === "orange") dot.classList.add("dot-orange");
+        else dot.classList.add("dot-red");
+        info.textContent = text;
       }
 
       function totalSale() {
@@ -296,60 +300,60 @@
           el.innerHTML = "Nessuna vendita registrata.";
           return;
         }
-
         el.innerHTML = state.sales.slice(0, 50).map(function (sale) {
           var itemsText = Object.keys(sale.items || {})
             .filter(function (k) { return (sale.items[k] || 0) > 0; })
             .map(function (k) { return labels[k] + " x" + sale.items[k]; })
             .join(", ");
-
-          var paymentText = sale.paymentMethod === "pos" ? "POS" : "Contanti";
-
+          var payLabel = sale.paymentType === "POS" ? "POS" : "Contanti";
           return '<div class="sale-row">'
             + '<div class="sale-top"><span>' + (sale.cashier || "Cassiere") + '</span><span>' + euro(sale.total) + '</span></div>'
             + '<div>' + itemsText + '</div>'
-            + '<div style="margin-top:4px;">' + paymentText + ' · Pagato: ' + euro(sale.paid) + ' · Resto: ' + euro(sale.change) + (sale.time ? ' · ' + sale.time : '') + '</div>'
+            + '<div style="margin-top:4px;">' + payLabel + ' · Pagato: ' + euro(sale.paid) + ' · Resto: ' + euro(sale.change) + (sale.time ? ' · ' + sale.time : '') + '</div>'
             + '</div>';
         }).join("");
       }
 
       function renderCashManagement() {
         var cashier = state.cashier.trim();
-        document.getElementById("cashierNameMgmt").textContent = cashier || "-";
+        document.getElementById("cashierLabel").textContent = "Cassiere: " + (cashier || "-");
+
+        if (!cashier) {
+          document.getElementById("single-total-all").textContent = euro(0);
+          document.getElementById("single-total-pos").textContent = euro(0);
+          document.getElementById("single-total-cash").textContent = euro(0);
+          document.getElementById("single-cash-left").textContent = euro(0);
+          document.getElementById("emptyingsList").innerHTML = "Inserisci il nome del cassiere per vedere la gestione cassa.";
+          return;
+        }
 
         var cashierSales = state.sales.filter(function (sale) {
-          return (sale.cashier || "").trim() === cashier;
+          return (sale.cashier || "").trim().toLowerCase() === cashier.toLowerCase();
         });
 
-        var totalAll = 0;
-        var totalPOS = 0;
-        var totalCash = 0;
-
+        var totalAll = 0, totalPOS = 0, totalCash = 0;
         cashierSales.forEach(function (sale) {
-          totalAll += Number(sale.total || 0);
-          if (sale.paymentMethod === "pos") totalPOS += Number(sale.total || 0);
-          else totalCash += Number(sale.total || 0);
+          var t = Number(sale.total || 0);
+          totalAll += t;
+          if ((sale.paymentType || "") === "POS") totalPOS += t;
+          else totalCash += t;
         });
 
-        var withdrawals = getWithdrawals();
-        var withdrawnTotal = withdrawals.reduce(function (sum, item) {
-          return sum + Number(item.amount || 0);
-        }, 0);
+        var emptyings = getEmptyings();
+        var emptied = emptyings.reduce(function (sum, e) { return sum + Number(e.amount || 0); }, 0);
+        var cashLeft = Math.max(0, totalCash - emptied);
 
-        var currentCashInDrawer = totalCash - withdrawnTotal;
-        if (currentCashInDrawer < 0) currentCashInDrawer = 0;
+        document.getElementById("single-total-all").textContent = euro(totalAll);
+        document.getElementById("single-total-pos").textContent = euro(totalPOS);
+        document.getElementById("single-total-cash").textContent = euro(totalCash);
+        document.getElementById("single-cash-left").textContent = euro(cashLeft);
 
-        document.getElementById("singleCashTotal").textContent = euro(totalAll);
-        document.getElementById("singleCashPOS").textContent = euro(totalPOS);
-        document.getElementById("singleCashCash").textContent = euro(currentCashInDrawer);
-        document.getElementById("withdrawnTotal").textContent = euro(withdrawnTotal);
-
-        var historyEl = document.getElementById("withdrawalHistory");
-        if (!withdrawals.length) {
-          historyEl.innerHTML = "Nessuno svuotamento registrato.";
+        var listEl = document.getElementById("emptyingsList");
+        if (!emptyings.length) {
+          listEl.innerHTML = "Nessuno svuotamento registrato.";
         } else {
-          historyEl.innerHTML = withdrawals.slice().reverse().map(function (w) {
-            return '<div class="history-item">' + (w.time || "") + ' · ' + euro(w.amount || 0) + '</div>';
+          listEl.innerHTML = emptyings.slice().reverse().map(function (e) {
+            return '<div class="emptying-row"><strong>' + euro(e.amount) + '</strong><div class="small">' + (e.time || "") + '</div></div>';
           }).join("");
         }
       }
@@ -376,9 +380,7 @@
         var change = paidRaw === "" ? 0 : Math.max(0, paid - total);
 
         document.getElementById("changeValue").textContent = euro(change);
-
-        var canConfirm = state.cashier.trim() && total > 0 && (paidRaw === "" || paid >= total);
-        document.getElementById("confirmBtn").disabled = !canConfirm;
+        document.getElementById("confirmBtn").disabled = !(state.cashier.trim() && total > 0 && (paidRaw === "" || paid >= total));
         document.getElementById("posBtn").disabled = !(state.cashier.trim() && total > 0);
 
         if (!state.cashier.trim()) {
@@ -391,7 +393,7 @@
 
         renderSales();
         renderCashManagement();
-        saveCaches();
+        saveLocalCaches();
       }
 
       function changeQty(key, delta) {
@@ -404,6 +406,104 @@
         state.paid = 0;
         document.getElementById("paidInput").value = "";
         updateUI();
+      }
+
+      function applySaleLocally(sale) {
+        state.sales.unshift(sale);
+        state.live.birra += Number((sale.items && sale.items.birra) || 0);
+        state.live.spritz += Number((sale.items && sale.items.spritz) || 0);
+        state.live.gin += Number((sale.items && sale.items.gin) || 0);
+        state.live.acqua += Number((sale.items && sale.items.acqua) || 0);
+        state.live.coca += Number((sale.items && sale.items.coca) || 0);
+        state.live.totalCash += Number(sale.total || 0);
+        if ((sale.paymentType || "") === "POS") state.live.totalPOS += Number(sale.total || 0);
+      }
+
+      function syncPendingSales() {
+        if (!state.onlineReady || !statsRef || !salesRef || !state.pendingSales.length) return Promise.resolve();
+
+        var queue = state.pendingSales.slice();
+        var chain = Promise.resolve();
+
+        queue.forEach(function (sale) {
+          chain = chain.then(function () {
+            return statsRef.update({
+              birra: firebase.firestore.FieldValue.increment(sale.items.birra || 0),
+              spritz: firebase.firestore.FieldValue.increment(sale.items.spritz || 0),
+              gin: firebase.firestore.FieldValue.increment(sale.items.gin || 0),
+              acqua: firebase.firestore.FieldValue.increment(sale.items.acqua || 0),
+              coca: firebase.firestore.FieldValue.increment(sale.items.coca || 0),
+              totalCash: firebase.firestore.FieldValue.increment(sale.total || 0),
+              totalPOS: firebase.firestore.FieldValue.increment((sale.paymentType === "POS") ? (sale.total || 0) : 0)
+            }).then(function () {
+              return salesRef.add(sale);
+            }).then(function () {
+              state.pendingSales = state.pendingSales.filter(function (p) { return p.localId !== sale.localId; });
+              saveLocalCaches();
+            });
+          });
+        });
+
+        return chain.then(function () {
+          setSyncIndicator("green", "Sincronizzazione online attiva");
+        }).catch(function (err) {
+          console.error(err);
+          setSyncIndicator("red", "Errore sincronizzazione");
+        });
+      }
+
+      function registerSale(paymentType) {
+        var total = totalSale();
+        if (!state.cashier.trim() || total <= 0) return;
+
+        var paidRaw = document.getElementById("paidInput").value.trim();
+        var paid = paymentType === "POS" ? total : (paidRaw === "" ? total : (Number(state.paid) || 0));
+        var change = paymentType === "POS" ? 0 : (paidRaw === "" ? 0 : Math.max(0, paid - total));
+
+        if (paymentType !== "POS" && paidRaw !== "" && paid < total) {
+          document.getElementById("status").textContent = "Importo insufficiente.";
+          return;
+        }
+
+        var sale = {
+          localId: "sale_" + Date.now() + "_" + Math.random().toString(36).slice(2, 9),
+          cashier: state.cashier.trim(),
+          items: {
+            birra: state.items.birra,
+            spritz: state.items.spritz,
+            gin: state.items.gin,
+            acqua: state.items.acqua,
+            coca: state.items.coca
+          },
+          total: total,
+          paid: paid,
+          change: change,
+          paymentType: paymentType,
+          createdAt: new Date().toISOString(),
+          time: new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })
+        };
+
+        applySaleLocally(sale);
+        state.pendingSales.push(sale);
+        updateUI();
+        resetCurrentSale();
+
+        if (state.onlineReady) {
+          setSyncIndicator("green", "Sincronizzazione online attiva");
+          syncPendingSales();
+          document.getElementById("status").textContent = paymentType === "POS" ? "Pagamento POS registrato." : "Vendita registrata.";
+        } else {
+          setSyncIndicator("orange", "Offline temporaneo - salvataggio locale attivo");
+          document.getElementById("status").textContent = "Vendita salvata offline.";
+        }
+      }
+
+      function showPage(pageId) {
+        ["mainPage", "salesPage", "cashMgmtPage"].forEach(function (id) {
+          document.getElementById(id).classList.remove("active");
+        });
+        document.getElementById(pageId).classList.add("active");
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
       function bindButtons() {
@@ -422,10 +522,10 @@
       function initOnline() {
         try {
           if (!window.firebase) {
-            setSyncIndicator("red", "Sincronizzazione online non disponibile");
+            state.onlineReady = false;
+            setSyncIndicator("red", "Firebase non caricato");
             return;
           }
-
           if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
           db = firebase.firestore();
@@ -433,12 +533,12 @@
           salesRef = db.collection("efm26_sales");
 
           statsRef.set({
-            birra: 0, spritz: 0, gin: 0, acqua: 0, coca: 0,
-            totalCash: 0, totalPOS: 0,
+            birra: 0, spritz: 0, gin: 0, acqua: 0, coca: 0, totalCash: 0, totalPOS: 0,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           }, { merge: true }).then(function () {
             state.onlineReady = true;
             setSyncIndicator("green", "Sincronizzazione online attiva");
+            syncPendingSales();
           }).catch(function (err) {
             console.error(err);
             state.onlineReady = false;
@@ -446,7 +546,7 @@
           });
 
           statsRef.onSnapshot(function (snap) {
-            if (!snap.exists) return;
+            if (!snap.exists || !state.onlineReady) return;
             var d = snap.data() || {};
             state.live = {
               birra: d.birra || 0,
@@ -463,7 +563,8 @@
             setSyncIndicator("red", "Errore lettura statistiche online");
           });
 
-          salesRef.orderBy("createdAt", "desc").limit(100).onSnapshot(function (snap) {
+          salesRef.orderBy("createdAt", "desc").limit(200).onSnapshot(function (snap) {
+            if (!state.onlineReady) return;
             state.sales = snap.docs.map(function (doc) {
               var data = doc.data() || {};
               if (data.createdAt && data.createdAt.toDate) {
@@ -478,58 +579,144 @@
           });
         } catch (err) {
           console.error(err);
+          state.onlineReady = false;
           setSyncIndicator("red", "Errore avvio Firebase");
         }
       }
 
-      function saveSale(paymentMethod) {
-        if (!statsRef || !salesRef) {
-          document.getElementById("status").textContent = "Online non attivo.";
+      window.addEventListener("online", function () {
+        if (state.onlineReady) {
+          setSyncIndicator("green", "Sincronizzazione online attiva");
+          syncPendingSales();
+        } else {
+          setSyncIndicator("orange", "Connessione tornata - tentativo sincronizzazione");
+          initOnline();
+        }
+      });
+
+      window.addEventListener("offline", function () {
+        setSyncIndicator("orange", "Offline temporaneo - salvataggio locale attivo");
+      });
+
+      document.getElementById("cashierName").addEventListener("input", function () {
+        state.cashier = this.value;
+        updateUI();
+      });
+
+      document.getElementById("paidInput").addEventListener("input", function () {
+        state.paid = Number(this.value) || 0;
+        updateUI();
+      });
+
+      document.getElementById("clearBtn").addEventListener("click", function () {
+        resetCurrentSale();
+        document.getElementById("status").textContent = "Ordine corrente azzerato.";
+      });
+
+      document.getElementById("confirmBtn").addEventListener("click", function () {
+        registerSale("CONTANTI");
+      });
+
+      document.getElementById("posBtn").addEventListener("click", function () {
+        registerSale("POS");
+      });
+
+      document.getElementById("goSalesBtn").addEventListener("click", function () {
+        showPage("salesPage");
+      });
+
+      document.getElementById("goCashMgmtBtn").addEventListener("click", function () {
+        showPage("cashMgmtPage");
+        renderCashManagement();
+      });
+
+      document.getElementById("backFromSalesBtn").addEventListener("click", function () {
+        showPage("mainPage");
+      });
+
+      document.getElementById("backFromCashMgmtBtn").addEventListener("click", function () {
+        showPage("mainPage");
+      });
+
+      document.getElementById("saveEmptyingBtn").addEventListener("click", function () {
+        if (!state.cashier.trim()) {
+          document.getElementById("status").textContent = "Inserisci il nome del cassiere.";
           return;
         }
 
-        var total = totalSale();
-        var paidRaw = document.getElementById("paidInput").value.trim();
-        var paid = paymentMethod === "pos" ? total : (paidRaw === "" ? total : (Number(state.paid) || 0));
-        var change = paymentMethod === "pos" ? 0 : (paidRaw === "" ? 0 : Math.max(0, paid - total));
-
-        var items = {
-          birra: state.items.birra,
-          spritz: state.items.spritz,
-          gin: state.items.gin,
-          acqua: state.items.acqua,
-          coca: state.items.coca
-        };
-
-        document.getElementById("status").textContent = "Salvataggio in corso...";
-
-        var statsUpdate = {
-          birra: firebase.firestore.FieldValue.increment(items.birra),
-          spritz: firebase.firestore.FieldValue.increment(items.spritz),
-          gin: firebase.firestore.FieldValue.increment(items.gin),
-          acqua: firebase.firestore.FieldValue.increment(items.acqua),
-          coca: firebase.firestore.FieldValue.increment(items.coca),
-          totalCash: firebase.firestore.FieldValue.increment(total)
-        };
-
-        if (paymentMethod === "pos") {
-          statsUpdate.totalPOS = firebase.firestore.FieldValue.increment(total);
+        var value = Number(document.getElementById("emptyingInput").value) || 0;
+        if (value <= 0) {
+          document.getElementById("status").textContent = "Inserisci un importo valido per lo svuotamento.";
+          return;
         }
 
-        statsRef.update(statsUpdate).then(function () {
-          return salesRef.add({
-            cashier: state.cashier.trim(),
-            items: items,
-            total: total,
-            paid: paid,
-            change: change,
-            paymentMethod: paymentMethod,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            time: new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })
+        var emptyings = getEmptyings();
+        emptyings.push({
+          amount: value,
+          time: new Date().toLocaleString("it-IT")
+        });
+        saveEmptyings(emptyings);
+        document.getElementById("emptyingInput").value = "";
+        renderCashManagement();
+        document.getElementById("status").textContent = "Svuotamento cassa registrato.";
+      });
+
+      document.getElementById("resetTotalsBtn").addEventListener("click", function () {
+        var password = prompt("Inserisci la password di reset");
+        if (password !== "EFM26RESET") {
+          document.getElementById("status").textContent = "Password errata.";
+          return;
+        }
+
+        state.live = { birra: 0, spritz: 0, gin: 0, acqua: 0, coca: 0, totalCash: 0, totalPOS: 0 };
+        state.sales = [];
+        state.pendingSales = [];
+        saveLocalCaches();
+
+        if (statsRef) {
+          statsRef.set({
+            birra: 0, spritz: 0, gin: 0, acqua: 0, coca: 0, totalCash: 0, totalPOS: 0,
+            resetAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true }).catch(function (err) {
+            console.error(err);
           });
-        }).then(function () {
-          resetCurrentSale();
-          document.getElementById("status").textContent = paymentMethod === "pos" ? "Pagamento POS registrato." : "Vendita registrata online.";
-        }).catch(function (err) {
-          console.error(err);
-          document.getElementById("status").textContent = "
+        }
+
+        updateUI();
+        renderCashManagement();
+        document.getElementById("status").textContent = "Incassi azzerati.";
+      });
+
+      document.getElementById("exportBtn").addEventListener("click", function () {
+        var rows = state.sales.map(function (s) {
+          return {
+            ora: s.time || "",
+            cassiere: s.cashier || "",
+            pagamento: s.paymentType || "",
+            birra: (s.items && s.items.birra) || 0,
+            spritz: (s.items && s.items.spritz) || 0,
+            gin_tonic: (s.items && s.items.gin) || 0,
+            acqua: (s.items && s.items.acqua) || 0,
+            coca_cola_the: (s.items && s.items.coca) || 0,
+            totale: s.total || 0,
+            pagato: s.paid || 0,
+            resto: s.change || 0
+          };
+        });
+
+        var ws = XLSX.utils.json_to_sheet(rows);
+        var wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Vendite");
+        XLSX.writeFile(wb, "efm26_vendite.xlsx");
+        document.getElementById("status").textContent = "Excel esportato.";
+      });
+
+      bindButtons();
+      updateUI();
+      renderSales();
+      renderCashManagement();
+      initOnline();
+    })();
+  </script>
+</body>
+</html>
