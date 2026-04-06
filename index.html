@@ -39,8 +39,6 @@
     .stat{background:var(--card2);border-radius:12px;padding:12px;text-align:center}
     .stat .n{font-size:24px;font-weight:800}
     .small{color:var(--muted);font-size:13px;line-height:1.45}
-    .sale-row{background:var(--card2);border-radius:12px;padding:10px;margin-bottom:8px;font-size:14px}
-    .sale-top{display:flex;justify-content:space-between;gap:10px;font-weight:700;margin-bottom:4px}
     .page{display:none}
     .page.active{display:block}
     .sync-wrap{display:flex;align-items:center;gap:8px;margin-top:10px}
@@ -158,24 +156,14 @@
           <div class="value" id="live-total">€ 0,00</div>
         </div>
 
-        <button class="btn btn-secondary" id="goSalesBtn">Ultime vendite</button>
         <button class="btn btn-secondary" id="goCashMgmtBtn">Gestione cassa</button>
+        <button class="btn btn-main" id="exportBtn">Esporta Excel vendite</button>
+        <button class="btn btn-danger" id="resetTotalsBtn">Reset incassi serata</button>
 
         <div class="sync-wrap">
           <span id="syncDot" class="sync-dot dot-orange"></span>
           <span class="small" id="syncInfo">Sincronizzazione online in avvio...</span>
         </div>
-      </div>
-    </div>
-
-    <div id="salesPage" class="page">
-      <div class="card">
-        <div class="section-title">Ultime vendite</div>
-        <button class="btn btn-secondary" id="backFromSalesBtn">Torna alla cassa</button>
-        <div id="salesList" class="small" style="margin-top:12px;">Nessuna vendita registrata.</div>
-        <button class="btn btn-main" id="exportBtn">Esporta Excel vendite</button>
-        <button class="btn btn-danger" id="resetTotalsBtn">Reset incassi serata</button>
-        <p class="small" style="margin-top:10px;">Password reset: EFM26RESET</p>
       </div>
     </div>
 
@@ -302,26 +290,6 @@
              + (state.items.coca * prices.coca);
       }
 
-      function renderSales() {
-        var el = document.getElementById("salesList");
-        if (!state.sales.length) {
-          el.innerHTML = "Nessuna vendita registrata.";
-          return;
-        }
-        el.innerHTML = state.sales.slice(0, 50).map(function (sale) {
-          var itemsText = Object.keys(sale.items || {})
-            .filter(function (k) { return (sale.items[k] || 0) > 0; })
-            .map(function (k) { return labels[k] + " x" + sale.items[k]; })
-            .join(", ");
-          var payLabel = sale.paymentType === "POS" ? "POS" : "Contanti";
-          return '<div class="sale-row">'
-            + '<div class="sale-top"><span>' + (sale.cashier || "Cassiere") + '</span><span>' + euro(sale.total) + '</span></div>'
-            + '<div>' + itemsText + '</div>'
-            + '<div style="margin-top:4px;">' + payLabel + ' · Pagato: ' + euro(sale.paid) + ' · Resto: ' + euro(sale.change) + (sale.time ? ' · ' + sale.time : '') + '</div>'
-            + '</div>';
-        }).join("");
-      }
-
       function renderCashManagement() {
         var cashier = state.cashier.trim();
         document.getElementById("cashierLabel").textContent = "Cassiere: " + (cashier || "-");
@@ -399,7 +367,6 @@
           document.getElementById("status").textContent = "";
         }
 
-        renderSales();
         renderCashManagement();
         saveLocalCaches();
       }
@@ -507,7 +474,7 @@
       }
 
       function showPage(pageId) {
-        ["mainPage", "salesPage", "cashMgmtPage"].forEach(function (id) {
+        ["mainPage", "cashMgmtPage"].forEach(function (id) {
           document.getElementById(id).classList.remove("active");
         });
         document.getElementById(pageId).classList.add("active");
@@ -564,7 +531,7 @@
           });
 
           statsRef.onSnapshot(function (snap) {
-            if (!snap.exists || !state.onlineReady) return;
+            if (!snap.exists) return;
             var d = snap.data() || {};
             state.live = {
               birra: d.birra || 0,
@@ -590,7 +557,7 @@
               }
               return data;
             });
-            updateUI();
+            saveLocalCaches();
           }, function (err) {
             console.error(err);
             setSyncIndicator("red", "Errore lettura vendite online");
@@ -639,17 +606,9 @@
         registerSale("POS");
       });
 
-      document.getElementById("goSalesBtn").addEventListener("click", function () {
-        showPage("salesPage");
-      });
-
       document.getElementById("goCashMgmtBtn").addEventListener("click", function () {
         showPage("cashMgmtPage");
         renderCashManagement();
-      });
-
-      document.getElementById("backFromSalesBtn").addEventListener("click", function () {
-        showPage("mainPage");
       });
 
       document.getElementById("backFromCashMgmtBtn").addEventListener("click", function () {
@@ -714,7 +673,6 @@
             var snap = await salesRef.get();
             var batchSize = 400;
             var docs = snap.docs;
-
             for (var i = 0; i < docs.length; i += batchSize) {
               var batch = db.batch();
               docs.slice(i, i + batchSize).forEach(function (doc) {
@@ -725,7 +683,6 @@
           }
 
           updateUI();
-          renderSales();
           renderCashManagement();
           document.getElementById("status").textContent = "Reset completo eseguito.";
         } catch (err) {
@@ -760,7 +717,6 @@
 
       bindButtons();
       updateUI();
-      renderSales();
       renderCashManagement();
       initOnline();
     })();
