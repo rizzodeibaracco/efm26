@@ -139,11 +139,13 @@
 
       <div class="card">
         <div class="section-title">Statistiche live</div>
+
         <div class="stats-grid">
           <div class="stat"><div class="label">Birre</div><div class="n" id="live-birra">0</div></div>
           <div class="stat"><div class="label">Spritz</div><div class="n" id="live-spritz">0</div></div>
           <div class="stat"><div class="label">Gin tonic</div><div class="n" id="live-gin">0</div></div>
           <div class="stat"><div class="label">Acque</div><div class="n" id="live-acqua">0</div></div>
+          <div class="stat"><div class="label">Coca Cola / Tè</div><div class="n" id="live-coca">0</div></div>
         </div>
 
         <div class="box" style="margin-top:12px;text-align:center;">
@@ -347,6 +349,7 @@
         document.getElementById("live-spritz").textContent = state.live.spritz || 0;
         document.getElementById("live-gin").textContent = state.live.gin || 0;
         document.getElementById("live-acqua").textContent = state.live.acqua || 0;
+        document.getElementById("live-coca").textContent = state.live.coca || 0;
         document.getElementById("live-total").textContent = euro(state.live.totalCash || 0);
         document.getElementById("live-pos").textContent = euro(state.live.totalPOS || 0);
 
