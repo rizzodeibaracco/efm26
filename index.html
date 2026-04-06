@@ -540,10 +540,20 @@
           statsRef = db.collection("efm26").doc("stats");
           salesRef = db.collection("efm26_sales");
 
-          statsRef.set({
-            birra: 0, spritz: 0, gin: 0, acqua: 0, coca: 0, totalCash: 0, totalPOS: 0,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          }, { merge: true }).then(function () {
+          statsRef.get().then(function (doc) {
+            if (!doc.exists) {
+              return statsRef.set({
+                birra: 0,
+                spritz: 0,
+                gin: 0,
+                acqua: 0,
+                coca: 0,
+                totalCash: 0,
+                totalPOS: 0,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              });
+            }
+          }).then(function () {
             state.onlineReady = true;
             setSyncIndicator("green", "Sincronizzazione online attiva");
             syncPendingSales();
