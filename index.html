@@ -276,6 +276,14 @@
         localStorage.setItem(getCashMgmtKey(), JSON.stringify(list));
       }
 
+      function clearAllEmptyings() {
+        Object.keys(localStorage).forEach(function (key) {
+          if (key.indexOf("efm26_emptyings_") === 0) {
+            localStorage.removeItem(key);
+          }
+        });
+      }
+
       function setSyncIndicator(status, text) {
         var dot = document.getElementById("syncDot");
         var info = document.getElementById("syncInfo");
@@ -661,30 +669,59 @@
         document.getElementById("status").textContent = "Svuotamento cassa registrato.";
       });
 
-      document.getElementById("resetTotalsBtn").addEventListener("click", function () {
+      document.getElementById("resetTotalsBtn").addEventListener("click", async function () {
         var password = prompt("Inserisci la password di reset");
         if (password !== "EFM26RESET") {
           document.getElementById("status").textContent = "Password errata.";
           return;
         }
 
-        state.live = { birra: 0, spritz: 0, gin: 0, acqua: 0, coca: 0, totalCash: 0, totalPOS: 0 };
-        state.sales = [];
-        state.pendingSales = [];
-        saveLocalCaches();
+        document.getElementById("status").textContent = "Reset in corso...";
 
-        if (statsRef) {
-          statsRef.set({
-            birra: 0, spritz: 0, gin: 0, acqua: 0, coca: 0, totalCash: 0, totalPOS: 0,
-            resetAt: firebase.firestore.FieldValue.serverTimestamp()
-          }, { merge: true }).catch(function (err) {
-            console.error(err);
-          });
+        try {
+          state.live = { birra: 0, spritz: 0, gin: 0, acqua: 0, coca: 0, totalCash: 0, totalPOS: 0 };
+          state.sales = [];
+          state.pendingSales = [];
+          clearAllEmptyings();
+          localStorage.removeItem("efm26_sales_cache");
+          localStorage.removeItem("efm26_live_cache");
+          localStorage.removeItem("efm26_pending_sales");
+
+          if (statsRef) {
+            await statsRef.set({
+              birra: 0,
+              spritz: 0,
+              gin: 0,
+              acqua: 0,
+              coca: 0,
+              totalCash: 0,
+              totalPOS: 0,
+              resetAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+          }
+
+          if (salesRef) {
+            var snap = await salesRef.get();
+            var batchSize = 400;
+            var docs = snap.docs;
+
+            for (var i = 0; i < docs.length; i += batchSize) {
+              var batch = db.batch();
+              docs.slice(i, i + batchSize).forEach(function (doc) {
+                batch.delete(doc.ref);
+              });
+              await batch.commit();
+            }
+          }
+
+          updateUI();
+          renderSales();
+          renderCashManagement();
+          document.getElementById("status").textContent = "Reset completo eseguito.";
+        } catch (err) {
+          console.error(err);
+          document.getElementById("status").textContent = "Errore durante il reset completo.";
         }
-
-        updateUI();
-        renderCashManagement();
-        document.getElementById("status").textContent = "Incassi azzerati.";
       });
 
       document.getElementById("exportBtn").addEventListener("click", function () {
