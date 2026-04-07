@@ -48,6 +48,8 @@
     .dot-red{background:#ef4444}
     .cash-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .emptying-row{background:var(--card2);border-radius:12px;padding:10px;margin-bottom:8px}
+    .sale-row{background:var(--card2);border-radius:12px;padding:10px;margin-bottom:8px;font-size:14px}
+    .sale-top{display:flex;justify-content:space-between;gap:10px;font-weight:700;margin-bottom:4px}
     @media (max-width:640px){
       .title{font-size:28px}
       .product-name{font-size:20px}
@@ -134,6 +136,7 @@
         <button class="btn btn-main" id="confirmBtn">Conferma vendita</button>
         <button class="btn btn-pos" id="posBtn">POS</button>
         <button class="btn btn-danger" id="clearBtn">Azzera ordine corrente</button>
+        <button class="btn btn-secondary" id="goSalesPageBtn">Ultime vendite</button>
         <div class="status" id="status"></div>
       </div>
 
@@ -166,6 +169,14 @@
           <span id="syncDot" class="sync-dot dot-orange"></span>
           <span class="small" id="syncInfo">Sincronizzazione online in avvio...</span>
         </div>
+      </div>
+    </div>
+
+    <div id="salesPage" class="page">
+      <div class="card">
+        <div class="section-title">Ultime 100 vendite</div>
+        <button class="btn btn-secondary" id="backFromSalesBtn">Torna alla cassa</button>
+        <div id="salesListPage" class="small" style="margin-top:12px;">Nessuna vendita registrata.</div>
       </div>
     </div>
 
@@ -292,6 +303,26 @@
              + (state.items.coca * prices.coca);
       }
 
+      function renderSalesPage() {
+        var el = document.getElementById("salesListPage");
+        if (!state.sales.length) {
+          el.innerHTML = "Nessuna vendita registrata.";
+          return;
+        }
+        el.innerHTML = state.sales.slice(0, 100).map(function (sale) {
+          var itemsText = Object.keys(sale.items || {})
+            .filter(function (k) { return (sale.items[k] || 0) > 0; })
+            .map(function (k) { return labels[k] + " x" + sale.items[k]; })
+            .join(", ");
+          var payLabel = sale.paymentType === "POS" ? "POS" : "Contanti";
+          return '<div class="sale-row">'
+            + '<div class="sale-top"><span>' + (sale.cashier || "Cassiere") + '</span><span>' + euro(sale.total) + '</span></div>'
+            + '<div>' + itemsText + '</div>'
+            + '<div style="margin-top:4px;">' + payLabel + ' · Pagato: ' + euro(sale.paid) + ' · Resto: ' + euro(sale.change) + (sale.time ? ' · ' + sale.time : '') + '</div>'
+            + '</div>';
+        }).join("");
+      }
+
       function renderCashManagement() {
         var cashier = state.cashier.trim();
         document.getElementById("cashierLabel").textContent = "Cassiere: " + (cashier || "-");
@@ -371,6 +402,7 @@
         }
 
         renderCashManagement();
+        renderSalesPage();
         saveLocalCaches();
       }
 
@@ -477,7 +509,7 @@
       }
 
       function showPage(pageId) {
-        ["mainPage", "cashMgmtPage"].forEach(function (id) {
+        ["mainPage", "salesPage", "cashMgmtPage"].forEach(function (id) {
           document.getElementById(id).classList.remove("active");
         });
         document.getElementById(pageId).classList.add("active");
@@ -561,6 +593,8 @@
               return data;
             });
             saveLocalCaches();
+            renderSalesPage();
+            renderCashManagement();
           }, function (err) {
             console.error(err);
             setSyncIndicator("red", "Errore lettura vendite online");
@@ -607,6 +641,15 @@
 
       document.getElementById("posBtn").addEventListener("click", function () {
         registerSale("POS");
+      });
+
+      document.getElementById("goSalesPageBtn").addEventListener("click", function () {
+        renderSalesPage();
+        showPage("salesPage");
+      });
+
+      document.getElementById("backFromSalesBtn").addEventListener("click", function () {
+        showPage("mainPage");
       });
 
       document.getElementById("goCashMgmtBtn").addEventListener("click", function () {
@@ -687,6 +730,7 @@
 
           updateUI();
           renderCashManagement();
+          renderSalesPage();
           document.getElementById("status").textContent = "Reset completo eseguito.";
         } catch (err) {
           console.error(err);
@@ -721,6 +765,7 @@
       bindButtons();
       updateUI();
       renderCashManagement();
+      renderSalesPage();
       initOnline();
     })();
   </script>
